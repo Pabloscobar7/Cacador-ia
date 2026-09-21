@@ -3,366 +3,441 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Caçador IA</title>
+<meta name="theme-color" content="#0d1728">
+<title>Caçador IA V1</title>
 
 <style>
+*{box-sizing:border-box}
 body{
   margin:0;
   font-family:Arial,sans-serif;
-  background:#101827;
-  color:white;
+  background:#0d1728;
+  color:#fff;
 }
 .container{
-  max-width:700px;
-  margin:auto;
-  padding:20px;
+  width:min(680px,94%);
+  margin:0 auto;
+  padding:38px 0 50px;
 }
-h1{
-  text-align:center;
-  margin-bottom:5px;
-}
-.sub{
-  text-align:center;
-  color:#aeb8c8;
-  margin-bottom:25px;
-}
+.header{text-align:center;margin-bottom:28px}
+.logo{font-size:44px}
+h1{font-size:36px;margin:8px 0 4px}
+.subtitle{font-size:20px;color:#aeb8c9}
 .card{
-  background:#182235;
-  padding:18px;
-  border-radius:15px;
-  margin-bottom:18px;
+  background:#172338;
+  border-radius:28px;
+  padding:26px;
+  box-shadow:0 12px 35px rgba(0,0,0,.22);
 }
 label{
   display:block;
-  margin-top:12px;
-  margin-bottom:6px;
+  font-size:18px;
   font-weight:bold;
+  margin-bottom:10px;
 }
-input,select{
+input{
   width:100%;
-  box-sizing:border-box;
-  padding:13px;
+  padding:18px 20px;
   border:0;
-  border-radius:9px;
-  font-size:16px;
+  border-radius:17px;
+  font-size:19px;
+  outline:none;
+  margin-bottom:16px;
 }
 button{
   width:100%;
-  padding:14px;
-  margin-top:18px;
   border:0;
-  border-radius:9px;
-  font-size:16px;
+  border-radius:16px;
+  padding:18px;
+  background:#20c979;
+  color:#fff;
+  font-size:19px;
   font-weight:bold;
-  background:#20c77a;
-  color:white;
+  cursor:pointer;
 }
-.resultado{
-  background:#202d44;
-  padding:15px;
-  border-radius:10px;
-  margin-top:15px;
-}
-.stat{
-  display:inline-block;
-  width:30%;
+button:active{transform:scale(.99)}
+button:disabled{opacity:.65;cursor:wait}
+.status{
   text-align:center;
-  padding:8px;
+  color:#b9c4d5;
+  margin:18px 0 0;
+  min-height:24px;
 }
-.numero{
+.result{
+  margin-top:24px;
+  display:none;
+}
+.result.show{display:block}
+.result-title{
   font-size:25px;
   font-weight:bold;
+  margin-bottom:15px;
 }
-.item{
-  border-bottom:1px solid #33415c;
-  padding:12px 0;
+.match-name{
+  font-size:22px;
+  font-weight:bold;
+  margin-bottom:16px;
 }
-.small{
-  color:#aeb8c8;
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+.info{
+  background:#0f1b2d;
+  border-radius:15px;
+  padding:14px;
+}
+.info small{
+  display:block;
+  color:#9eabc0;
+  margin-bottom:5px;
+}
+.info strong{font-size:16px}
+.analysis{
+  margin-top:16px;
+  background:#0f1b2d;
+  border-radius:18px;
+  padding:17px;
+  line-height:1.55;
+}
+.analysis h3{margin:0 0 8px}
+.warning{
+  margin-top:14px;
+  padding:14px;
+  border-radius:14px;
+  background:#2a2230;
+  color:#f1c8df;
+  line-height:1.45;
+}
+.footer{
+  text-align:center;
+  color:#8290a7;
   font-size:13px;
+  margin-top:22px;
+  line-height:1.5;
 }
-.danger{
-  background:#d9534f;
+.spinner{
+  display:inline-block;
+  width:16px;
+  height:16px;
+  border:3px solid #718099;
+  border-top-color:#20c979;
+  border-radius:50%;
+  animation:spin .8s linear infinite;
+  vertical-align:middle;
+  margin-right:7px;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:480px){
+  .container{padding-top:26px}
+  h1{font-size:31px}
+  .logo{font-size:38px}
+  .grid{grid-template-columns:1fr}
+  .card{padding:20px}
 }
 </style>
 </head>
 
 <body>
-
 <div class="container">
 
-<h1>🎯 CAÇADOR IA</h1>
-<div class="sub">Comparador de previsões</div>
+  <div class="header">
+    <div class="logo">🎯</div>
+    <h1>CAÇADOR IA</h1>
+    <div class="subtitle">Analisador de jogos V1</div>
+  </div>
 
-<div class="card">
+  <div class="card">
+    <label for="jogo">Digite o nome do jogo</label>
+    <input
+      id="jogo"
+      type="text"
+      autocomplete="off"
+      placeholder="Ex.: Manchester United vs Newcastle"
+      onkeydown="if(event.key==='Enter') analisarJogo()"
+    >
 
-<label>Jogo</label>
-<input id="jogo" placeholder="Ex: Adelaide United vs Tai Po">
+    <button id="btn" onclick="analisarJogo()">🔍 ANALISAR JOGO</button>
 
-<label>Odd</label>
-<input id="odd" type="number" step="0.01" placeholder="Ex: 1.50">
+    <div id="status" class="status"></div>
 
-<label>Mercado</label>
-<select id="mercado">
-<option>Vencedor</option>
-<option>Empate</option>
-<option>Mais de 2.5 gols</option>
-<option>Menos de 2.5 gols</option>
-<option>Ambas marcam</option>
-<option>1º tempo</option>
-<option>Outro</option>
-</select>
+    <div id="resultado" class="result">
+      <div class="result-title">📊 Resultado da análise</div>
+      <div id="nomeJogo" class="match-name"></div>
 
-<label>IA / Sistema 1</label>
-<input id="ia1" placeholder="Previsão">
+      <div class="grid">
+        <div class="info">
+          <small>Competição</small>
+          <strong id="competicao">—</strong>
+        </div>
+        <div class="info">
+          <small>Data</small>
+          <strong id="data">—</strong>
+        </div>
+        <div class="info">
+          <small>Estado</small>
+          <strong id="estado">—</strong>
+        </div>
+        <div class="info">
+          <small>Local</small>
+          <strong id="local">—</strong>
+        </div>
+      </div>
 
-<label>IA / Sistema 2</label>
-<input id="ia2" placeholder="Previsão">
+      <div class="analysis">
+        <h3>🎯 Leitura do Caçador</h3>
+        <div id="leitura"></div>
+      </div>
 
-<label>IA / Sistema 3</label>
-<input id="ia3" placeholder="Previsão">
+      <div id="aviso" class="warning" style="display:none"></div>
+    </div>
 
-<button onclick="analisar()">ANALISAR CONCORDÂNCIA</button>
-
-<div id="analise"></div>
-
-</div>
-
-<div class="card">
-
-<h2>Resultado real</h2>
-
-<input id="resultado" placeholder="Ex: Adelaide United">
-
-<button onclick="registrar()">REGISTRAR RESULTADO</button>
-
-</div>
-
-<div class="card">
-
-<h2>📊 Histórico</h2>
-
-<div class="resultado">
-
-<div class="stat">
-<div class="numero" id="jogos">0</div>
-<div class="small">Jogos</div>
-</div>
-
-<div class="stat">
-<div class="numero" id="acertos">0</div>
-<div class="small">Acertos</div>
-</div>
-
-<div class="stat">
-<div class="numero" id="taxa">0%</div>
-<div class="small">Taxa</div>
-</div>
-
-</div>
-
-<div id="historico"></div>
-
-<button class="danger" onclick="limpar()">APAGAR HISTÓRICO</button>
-
-</div>
-
+    <div class="footer">
+      O Caçador V1 usa dados encontrados online. Quando não houver
+      dados suficientes, ele informa isso em vez de inventar uma previsão.
+    </div>
+  </div>
 </div>
 
 <script>
+const API_BASE = "https://www.thesportsdb.com/api/v1/json/123";
 
-let historico =
-JSON.parse(localStorage.getItem("cacadorIA") || "[]");
-
-function atualizar(){
-
-document.getElementById("jogos").innerText =
-historico.length;
-
-let acertos =
-historico.filter(x => x.acertou).length;
-
-document.getElementById("acertos").innerText =
-acertos;
-
-let taxa =
-historico.length ?
-Math.round((acertos / historico.length) * 100) : 0;
-
-document.getElementById("taxa").innerText =
-taxa + "%";
-
-let html="";
-
-historico.slice().reverse().forEach(x => {
-
-html += `
-<div class="item">
-<b>${x.jogo}</b><br>
-<span class="small">
-Mercado: ${x.mercado}<br>
-Previsões: ${x.previsoes.join(" | ")}<br>
-Resultado: ${x.resultado}<br>
-${x.acertou ? "✅ Acertou" : "❌ Errou"}
-</span>
-</div>
-`;
-
-});
-
-document.getElementById("historico").innerHTML = html;
+function limparTexto(texto){
+  return texto.replace(/\s+/g," ").trim();
 }
 
-function analisar(){
+function separarJogo(texto){
+  const original = limparTexto(texto);
 
-let jogo =
-document.getElementById("jogo").value.trim();
+  const separadores = [
+    /\s+vs\.?\s+/i,
+    /\s+v\s+/i,
+    /\s+x\s+/i,
+    /\s+-\s+/i
+  ];
 
-let odd =
-document.getElementById("odd").value;
+  for(const sep of separadores){
+    const partes = original.split(sep);
+    if(partes.length >= 2){
+      return {
+        casa: partes[0].trim(),
+        fora: partes.slice(1).join(" ").trim(),
+        original
+      };
+    }
+  }
 
-let mercado =
-document.getElementById("mercado").value;
-
-let previsoes = [
-document.getElementById("ia1").value.trim(),
-document.getElementById("ia2").value.trim(),
-document.getElementById("ia3").value.trim()
-].filter(x => x !== "");
-
-if(!jogo){
-alert("Coloque o nome do jogo.");
-return;
+  return {casa:"", fora:"", original};
 }
 
-if(previsoes.length < 2){
-alert("Coloque pelo menos 2 previsões.");
-return;
+function formatarData(data){
+  if(!data) return "Não disponível";
+  const d = new Date(data + "T00:00:00");
+  if(isNaN(d)) return data;
+  return d.toLocaleDateString("pt-PT",{
+    day:"2-digit",
+    month:"2-digit",
+    year:"numeric"
+  });
 }
 
-let contagem={};
-
-previsoes.forEach(p=>{
-let chave=p.toLowerCase();
-contagem[chave]=(contagem[chave]||0)+1;
-});
-
-let principal =
-Object.keys(contagem)
-.sort((a,b)=>contagem[b]-contagem[a])[0];
-
-let votos=contagem[principal];
-
-let concordancia =
-Math.round((votos/previsoes.length)*100);
-
-document.getElementById("analise").innerHTML = `
-<div class="resultado">
-
-<h3>🔎 Análise</h3>
-
-<p><b>Jogo:</b> ${jogo}</p>
-<p><b>Mercado:</b> ${mercado}</p>
-<p><b>Odd:</b> ${odd || "-"}</p>
-
-<p>
-<b>Previsão mais repetida:</b><br>
-${principal}
-</p>
-
-<p>
-<b>Concordância:</b>
-${concordancia}%
-</p>
-
-<p>
-${votos} de ${previsoes.length}
-sistemas indicaram a mesma previsão.
-</p>
-
-</div>
-`;
-
+function formatarHora(hora){
+  if(!hora) return "";
+  return hora.substring(0,5);
 }
 
-function registrar(){
+function estadoJogo(evento){
+  const status = (evento.strStatus || "").trim();
+  const date = evento.dateEvent || "";
+  const time = formatarHora(evento.strTime);
 
-let jogo =
-document.getElementById("jogo").value.trim();
+  if(status) return status;
+  if(evento.intHomeScore !== null && evento.intHomeScore !== undefined)
+    return "Resultado disponível";
 
-let resultado =
-document.getElementById("resultado").value.trim();
+  if(date){
+    const inicio = new Date(date + "T" + (time || "00:00"));
+    if(!isNaN(inicio.getTime())){
+      if(inicio > new Date()) return "Agendado";
+      return "Data passada";
+    }
+  }
 
-if(!jogo || !resultado){
-alert("Coloque o jogo e o resultado real.");
-return;
+  return "Informação disponível";
 }
 
-let previsoes = [
-document.getElementById("ia1").value.trim(),
-document.getElementById("ia2").value.trim(),
-document.getElementById("ia3").value.trim()
-].filter(x=>x!=="");
+function gerarLeitura(evento){
+  const casa = evento.strHomeTeam || "Equipa da casa";
+  const fora = evento.strAwayTeam || "Equipa visitante";
+  const status = estadoJogo(evento);
 
-if(previsoes.length < 2){
-alert("Primeiro coloque pelo menos 2 previsões.");
-return;
+  let texto = "";
+
+  texto += "O Caçador encontrou um registo para <b>" +
+           casa + " vs " + fora + "</b>. ";
+
+  if(evento.strLeague){
+    texto += "O jogo está associado à competição <b>" +
+             evento.strLeague + "</b>. ";
+  }
+
+  if(evento.strCountry){
+    texto += "País/região: <b>" + evento.strCountry + "</b>. ";
+  }
+
+  if(status.toLowerCase().includes("agend")){
+    texto += "O registo indica que o jogo está <b>agendado</b>. ";
+    texto += "Nesta V1, o Caçador não transforma apenas o nome das equipas numa certeza de vitória.";
+  }else if(evento.intHomeScore !== null && evento.intHomeScore !== undefined){
+    texto += "Existe resultado registado: <b>" +
+             evento.intHomeScore + " - " +
+             evento.intAwayScore + "</b>. ";
+    texto += "O resultado encontrado é apresentado como dado, não como previsão.";
+  }else{
+    texto += "Há informação do evento, mas não há dados suficientes neste registo para apresentar uma previsão confiável.";
+  }
+
+  return texto;
 }
 
-let acertou =
-previsoes.some(p =>
-p.toLowerCase() === resultado.toLowerCase()
-);
+function mostrarErro(mensagem){
+  const resultado = document.getElementById("resultado");
+  const aviso = document.getElementById("aviso");
+  const leitura = document.getElementById("leitura");
 
-historico.push({
+  resultado.classList.add("show");
+  document.getElementById("nomeJogo").textContent = "";
+  document.getElementById("competicao").textContent = "—";
+  document.getElementById("data").textContent = "—";
+  document.getElementById("estado").textContent = "Não encontrado";
+  document.getElementById("local").textContent = "—";
 
-jogo:jogo,
-
-mercado:
-document.getElementById("mercado").value,
-
-previsoes:previsoes,
-
-resultado:resultado,
-
-acertou:acertou
-
-});
-
-localStorage.setItem(
-"cacadorIA",
-JSON.stringify(historico)
-);
-
-atualizar();
-
-alert(
-acertou ?
-"Resultado registrado: houve previsão igual ao resultado." :
-"Resultado registrado: nenhuma previsão foi igual ao resultado."
-);
-
-document.getElementById("resultado").value="";
-
+  leitura.innerHTML = mensagem;
+  aviso.style.display = "block";
+  aviso.innerHTML =
+    "⚠️ O Caçador não encontrou dados suficientes para este nome. " +
+    "Tente escrever os nomes completos, por exemplo: " +
+    "<b>Manchester United vs Newcastle</b>.";
 }
 
-function limpar(){
+async function analisarJogo(){
+  const input = document.getElementById("jogo");
+  const btn = document.getElementById("btn");
+  const status = document.getElementById("status");
+  const resultado = document.getElementById("resultado");
+  const aviso = document.getElementById("aviso");
 
-if(confirm("Apagar todo o histórico?")){
+  const texto = limparTexto(input.value);
 
-historico=[];
+  if(!texto){
+    input.focus();
+    status.textContent = "Digite primeiro o nome do jogo.";
+    resultado.classList.remove("show");
+    return;
+  }
 
-localStorage.removeItem("cacadorIA");
+  const partes = separarJogo(texto);
 
-atualizar();
+  if(!partes.casa || !partes.fora){
+    resultado.classList.add("show");
+    document.getElementById("nomeJogo").textContent = texto;
+    document.getElementById("leitura").innerHTML =
+      "Para a V1 encontrar o jogo com maior facilidade, escreva no formato " +
+      "<b>Equipa A vs Equipa B</b>.";
+    aviso.style.display = "block";
+    aviso.innerHTML =
+      "Exemplo: <b>Manchester United vs Newcastle</b>";
+    status.textContent = "";
+    return;
+  }
 
+  btn.disabled = true;
+  status.innerHTML = '<span class="spinner"></span>A procurar o jogo...';
+  resultado.classList.remove("show");
+  aviso.style.display = "none";
+
+  try{
+    const nomeBusca = encodeURIComponent(
+      partes.casa + "_vs_" + partes.fora
+    );
+
+    const url = API_BASE + "/searchevents.php?e=" + nomeBusca;
+
+    const resposta = await fetch(url);
+
+    if(!resposta.ok){
+      throw new Error("Falha na ligação");
+    }
+
+    const dados = await resposta.json();
+    const eventos = dados.events || [];
+
+    if(!eventos.length){
+      mostrarErro(
+        "Não encontrei um evento correspondente ao nome informado."
+      );
+      status.textContent = "";
+      return;
+    }
+
+    const evento = eventos[0];
+
+    document.getElementById("nomeJogo").textContent =
+      (evento.strHomeTeam || partes.casa) +
+      " vs " +
+      (evento.strAwayTeam || partes.fora);
+
+    document.getElementById("competicao").textContent =
+      evento.strLeague || "Não disponível";
+
+    let dataTexto = formatarData(evento.dateEvent);
+    const hora = formatarHora(evento.strTime);
+    if(hora) dataTexto += " • " + hora;
+
+    document.getElementById("data").textContent = dataTexto;
+
+    document.getElementById("estado").textContent =
+      estadoJogo(evento);
+
+    const local = evento.strVenue ||
+                  evento.strCity ||
+                  "Não disponível";
+
+    document.getElementById("local").textContent = local;
+
+    document.getElementById("leitura").innerHTML =
+      gerarLeitura(evento);
+
+    if(evento.intHomeScore !== null &&
+       evento.intHomeScore !== undefined){
+      aviso.style.display = "block";
+      aviso.innerHTML =
+        "ℹ️ Resultado registado na fonte: <b>" +
+        evento.intHomeScore + " - " +
+        evento.intAwayScore + "</b>.";
+    }else{
+      aviso.style.display = "none";
+    }
+
+    resultado.classList.add("show");
+    status.textContent = "Jogo encontrado.";
+
+  }catch(erro){
+    console.error(erro);
+
+    resultado.classList.add("show");
+    document.getElementById("nomeJogo").textContent = texto;
+    document.getElementById("leitura").innerHTML =
+      "Não foi possível consultar os dados neste momento.";
+    aviso.style.display = "block";
+    aviso.innerHTML =
+      "⚠️ Verifique a ligação à internet e tente novamente.";
+    status.textContent = "";
+  }finally{
+    btn.disabled = false;
+  }
 }
-
-}
-
-atualizar();
-
 </script>
-
 </body>
 </html>
