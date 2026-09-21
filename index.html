@@ -3,441 +3,332 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#0d1728">
-<title>Caçador IA V1</title>
-
+<title>Caçador IA V1.1</title>
 <style>
 *{box-sizing:border-box}
 body{
   margin:0;
   font-family:Arial,sans-serif;
-  background:#0d1728;
+  background:#0b1220;
   color:#fff;
 }
 .container{
-  width:min(680px,94%);
-  margin:0 auto;
-  padding:38px 0 50px;
+  width:min(92%,520px);
+  margin:30px auto;
 }
-.header{text-align:center;margin-bottom:28px}
-.logo{font-size:44px}
-h1{font-size:36px;margin:8px 0 4px}
-.subtitle{font-size:20px;color:#aeb8c9}
 .card{
-  background:#172338;
-  border-radius:28px;
-  padding:26px;
-  box-shadow:0 12px 35px rgba(0,0,0,.22);
+  background:#121c2e;
+  border:1px solid #263653;
+  border-radius:18px;
+  padding:22px;
+  box-shadow:0 10px 30px rgba(0,0,0,.25);
 }
-label{
-  display:block;
-  font-size:18px;
-  font-weight:bold;
-  margin-bottom:10px;
-}
+h1{margin:0 0 6px;text-align:center;font-size:28px}
+.sub{text-align:center;color:#9fb0c8;margin-bottom:22px}
+label{display:block;margin-bottom:8px;font-weight:bold}
 input{
   width:100%;
-  padding:18px 20px;
-  border:0;
-  border-radius:17px;
-  font-size:19px;
+  padding:15px;
+  border-radius:12px;
+  border:1px solid #40516d;
+  background:#0b1220;
+  color:#fff;
+  font-size:16px;
   outline:none;
-  margin-bottom:16px;
 }
 button{
   width:100%;
+  margin-top:12px;
+  padding:15px;
   border:0;
-  border-radius:16px;
-  padding:18px;
-  background:#20c979;
-  color:#fff;
-  font-size:19px;
+  border-radius:12px;
+  background:#19c37d;
+  color:#06130d;
+  font-size:16px;
   font-weight:bold;
-  cursor:pointer;
 }
-button:active{transform:scale(.99)}
-button:disabled{opacity:.65;cursor:wait}
+button:disabled{opacity:.6}
 .status{
-  text-align:center;
-  color:#b9c4d5;
-  margin:18px 0 0;
-  min-height:24px;
-}
-.result{
-  margin-top:24px;
+  margin-top:15px;
+  padding:12px;
+  border-radius:10px;
+  background:#0d1728;
+  color:#b9c8dd;
   display:none;
 }
-.result.show{display:block}
-.result-title{
-  font-size:25px;
-  font-weight:bold;
-  margin-bottom:15px;
+.result{
+  margin-top:18px;
+  display:none;
 }
-.match-name{
-  font-size:22px;
-  font-weight:bold;
-  margin-bottom:16px;
+.row{
+  padding:10px 0;
+  border-bottom:1px solid #263653;
 }
-.grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-}
-.info{
-  background:#0f1b2d;
-  border-radius:15px;
-  padding:14px;
-}
-.info small{
-  display:block;
-  color:#9eabc0;
-  margin-bottom:5px;
-}
-.info strong{font-size:16px}
-.analysis{
-  margin-top:16px;
-  background:#0f1b2d;
-  border-radius:18px;
-  padding:17px;
-  line-height:1.55;
-}
-.analysis h3{margin:0 0 8px}
-.warning{
-  margin-top:14px;
-  padding:14px;
-  border-radius:14px;
-  background:#2a2230;
-  color:#f1c8df;
-  line-height:1.45;
-}
-.footer{
-  text-align:center;
-  color:#8290a7;
-  font-size:13px;
-  margin-top:22px;
+.row:last-child{border-bottom:0}
+.key{color:#8fa4c0;font-size:13px}
+.value{margin-top:3px;font-size:16px}
+.reading{
+  margin-top:15px;
+  padding:15px;
+  border-radius:12px;
+  background:#0d1728;
   line-height:1.5;
 }
-.spinner{
-  display:inline-block;
-  width:16px;
-  height:16px;
-  border:3px solid #718099;
-  border-top-color:#20c979;
-  border-radius:50%;
-  animation:spin .8s linear infinite;
-  vertical-align:middle;
-  margin-right:7px;
+.small{
+  margin-top:15px;
+  color:#8092aa;
+  font-size:12px;
+  line-height:1.45;
 }
-@keyframes spin{to{transform:rotate(360deg)}}
-@media(max-width:480px){
-  .container{padding-top:26px}
-  h1{font-size:31px}
-  .logo{font-size:38px}
-  .grid{grid-template-columns:1fr}
-  .card{padding:20px}
-}
+.ok{color:#5ee6a8}
+.warn{color:#ffd166}
+.err{color:#ff7b7b}
 </style>
 </head>
 
 <body>
 <div class="container">
-
-  <div class="header">
-    <div class="logo">🎯</div>
-    <h1>CAÇADOR IA</h1>
-    <div class="subtitle">Analisador de jogos V1</div>
-  </div>
-
   <div class="card">
-    <label for="jogo">Digite o nome do jogo</label>
-    <input
-      id="jogo"
-      type="text"
-      autocomplete="off"
-      placeholder="Ex.: Manchester United vs Newcastle"
-      onkeydown="if(event.key==='Enter') analisarJogo()"
-    >
+    <h1>🎯 CAÇADOR IA</h1>
+    <div class="sub">Analisador de jogos V1.1</div>
+
+    <label for="jogo">Digite o jogo</label>
+    <input id="jogo" type="text" placeholder="Ex.: Manchester United vs Newcastle">
 
     <button id="btn" onclick="analisarJogo()">🔍 ANALISAR JOGO</button>
 
     <div id="status" class="status"></div>
 
     <div id="resultado" class="result">
-      <div class="result-title">📊 Resultado da análise</div>
-      <div id="nomeJogo" class="match-name"></div>
-
-      <div class="grid">
-        <div class="info">
-          <small>Competição</small>
-          <strong id="competicao">—</strong>
-        </div>
-        <div class="info">
-          <small>Data</small>
-          <strong id="data">—</strong>
-        </div>
-        <div class="info">
-          <small>Estado</small>
-          <strong id="estado">—</strong>
-        </div>
-        <div class="info">
-          <small>Local</small>
-          <strong id="local">—</strong>
-        </div>
+      <div class="row">
+        <div class="key">Confronto</div>
+        <div class="value" id="confronto">—</div>
+      </div>
+      <div class="row">
+        <div class="key">Competição</div>
+        <div class="value" id="competicao">—</div>
+      </div>
+      <div class="row">
+        <div class="key">Data</div>
+        <div class="value" id="data">—</div>
+      </div>
+      <div class="row">
+        <div class="key">Estado</div>
+        <div class="value" id="estado">—</div>
+      </div>
+      <div class="row">
+        <div class="key">Local</div>
+        <div class="value" id="local">—</div>
       </div>
 
-      <div class="analysis">
-        <h3>🎯 Leitura do Caçador</h3>
-        <div id="leitura"></div>
+      <div class="reading">
+        <b>🎯 Leitura do Caçador</b>
+        <div id="leitura" style="margin-top:8px">—</div>
       </div>
-
-      <div id="aviso" class="warning" style="display:none"></div>
     </div>
 
-    <div class="footer">
-      O Caçador V1 usa dados encontrados online. Quando não houver
-      dados suficientes, ele informa isso em vez de inventar uma previsão.
+    <div class="small">
+      V1.1 procura primeiro o evento pelo nome e depois procura jogos de futebol
+      dos próximos dias. Se o serviço não tiver o jogo na base de dados, o Caçador
+      informa isso em vez de inventar uma partida ou previsão.
     </div>
   </div>
 </div>
 
 <script>
-const API_BASE = "https://www.thesportsdb.com/api/v1/json/123";
+const API = "https://www.thesportsdb.com/api/v1/json/123";
 
-function limparTexto(texto){
-  return texto.replace(/\s+/g," ").trim();
+const $ = id => document.getElementById(id);
+
+function normalizar(txt){
+  return (txt || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\\u0300-\\u036f]/g,"")
+    .replace(/&/g," and ")
+    .replace(/[^a-z0-9]+/g," ")
+    .replace(/\\b(fc|cf|sc|afc|club|football|futebol)\\b/g," ")
+    .replace(/\\s+/g," ")
+    .trim();
 }
 
-function separarJogo(texto){
-  const original = limparTexto(texto);
+function separarJogo(txt){
+  let s = txt.trim();
+  const partes = s.split(/\\s+(?:vs?|x)\\s+|\\s+-\\s+/i);
+  if(partes.length >= 2){
+    return [partes[0].trim(), partes.slice(1).join(" - ").trim()];
+  }
+  return [s, ""];
+}
 
-  const separadores = [
-    /\s+vs\.?\s+/i,
-    /\s+v\s+/i,
-    /\s+x\s+/i,
-    /\s+-\s+/i
-  ];
+function nomesCombinam(a,b){
+  const A = normalizar(a);
+  const B = normalizar(b);
+  if(!A || !B) return false;
+  if(A === B) return true;
+  if(A.includes(B) || B.includes(A)) return true;
 
-  for(const sep of separadores){
-    const partes = original.split(sep);
-    if(partes.length >= 2){
-      return {
-        casa: partes[0].trim(),
-        fora: partes.slice(1).join(" ").trim(),
-        original
-      };
-    }
+  const ta = new Set(A.split(" ").filter(x=>x.length>2));
+  const tb = new Set(B.split(" ").filter(x=>x.length>2));
+  let comuns = 0;
+  ta.forEach(x=>{ if(tb.has(x)) comuns++; });
+  return comuns >= 1 && (ta.size <= 3 || tb.size <= 3);
+}
+
+function eventoCombina(ev, casa, fora){
+  const h = ev.strHomeTeam || "";
+  const a = ev.strAwayTeam || "";
+
+  if(casa && fora){
+    return (nomesCombinam(casa,h) && nomesCombinam(fora,a)) ||
+           (nomesCombinam(casa,a) && nomesCombinam(fora,h));
   }
 
-  return {casa:"", fora:"", original};
+  const alvo = normalizar(casa);
+  return nomesCombinam(alvo,h) || nomesCombinam(alvo,a);
 }
 
-function formatarData(data){
-  if(!data) return "Não disponível";
-  const d = new Date(data + "T00:00:00");
-  if(isNaN(d)) return data;
-  return d.toLocaleDateString("pt-PT",{
-    day:"2-digit",
-    month:"2-digit",
-    year:"numeric"
-  });
+function formatarData(ev){
+  if(!ev.dateEvent) return "—";
+  let d = ev.dateEvent;
+  if(ev.strTime) d += " • " + ev.strTime.substring(0,5);
+  return d;
 }
 
-function formatarHora(hora){
-  if(!hora) return "";
-  return hora.substring(0,5);
+function estadoEvento(ev){
+  if(ev.strStatus) return ev.strStatus;
+  if(ev.intHomeScore != null && ev.intAwayScore != null)
+    return "Finalizado: " + ev.intHomeScore + " - " + ev.intAwayScore;
+  return "Agendado";
 }
 
-function estadoJogo(evento){
-  const status = (evento.strStatus || "").trim();
-  const date = evento.dateEvent || "";
-  const time = formatarHora(evento.strTime);
+function mostrarEvento(ev){
+  const casa = ev.strHomeTeam || "Casa";
+  const fora = ev.strAwayTeam || "Fora";
 
-  if(status) return status;
-  if(evento.intHomeScore !== null && evento.intHomeScore !== undefined)
-    return "Resultado disponível";
+  $("resultado").style.display = "block";
+  $("confronto").textContent = casa + " vs " + fora;
+  $("competicao").textContent = ev.strLeague || "—";
+  $("data").textContent = formatarData(ev);
+  $("estado").textContent = estadoEvento(ev);
+  $("local").textContent = ev.strVenue || "—";
 
-  if(date){
-    const inicio = new Date(date + "T" + (time || "00:00"));
-    if(!isNaN(inicio.getTime())){
-      if(inicio > new Date()) return "Agendado";
-      return "Data passada";
-    }
-  }
+  let leitura = "";
+  const status = (ev.strStatus || "").toLowerCase();
 
-  return "Informação disponível";
-}
-
-function gerarLeitura(evento){
-  const casa = evento.strHomeTeam || "Equipa da casa";
-  const fora = evento.strAwayTeam || "Equipa visitante";
-  const status = estadoJogo(evento);
-
-  let texto = "";
-
-  texto += "O Caçador encontrou um registo para <b>" +
-           casa + " vs " + fora + "</b>. ";
-
-  if(evento.strLeague){
-    texto += "O jogo está associado à competição <b>" +
-             evento.strLeague + "</b>. ";
-  }
-
-  if(evento.strCountry){
-    texto += "País/região: <b>" + evento.strCountry + "</b>. ";
-  }
-
-  if(status.toLowerCase().includes("agend")){
-    texto += "O registo indica que o jogo está <b>agendado</b>. ";
-    texto += "Nesta V1, o Caçador não transforma apenas o nome das equipas numa certeza de vitória.";
-  }else if(evento.intHomeScore !== null && evento.intHomeScore !== undefined){
-    texto += "Existe resultado registado: <b>" +
-             evento.intHomeScore + " - " +
-             evento.intAwayScore + "</b>. ";
-    texto += "O resultado encontrado é apresentado como dado, não como previsão.";
+  if(status.includes("postpon") || status.includes("cancel")){
+    leitura = "O evento foi alterado ou cancelado. Não vou tratar este jogo como uma partida normal.";
+  }else if(ev.intHomeScore != null && ev.intAwayScore != null){
+    leitura = "O jogo já tem resultado registado na base de dados. Para um prognóstico pré-jogo, seria necessário analisar os dados anteriores à partida.";
   }else{
-    texto += "Há informação do evento, mas não há dados suficientes neste registo para apresentar uma previsão confiável.";
+    leitura = "Jogo identificado. A V1.1 confirmou o confronto, mas não inventa uma previsão apenas com o nome das equipas. O próximo passo é acrescentar forma recente, histórico e outros dados.";
   }
-
-  return texto;
+  $("leitura").textContent = leitura;
 }
 
-function mostrarErro(mensagem){
-  const resultado = document.getElementById("resultado");
-  const aviso = document.getElementById("aviso");
-  const leitura = document.getElementById("leitura");
+async function getJSON(url){
+  const r = await fetch(url);
+  if(!r.ok) throw new Error("HTTP " + r.status);
+  return await r.json();
+}
 
-  resultado.classList.add("show");
-  document.getElementById("nomeJogo").textContent = "";
-  document.getElementById("competicao").textContent = "—";
-  document.getElementById("data").textContent = "—";
-  document.getElementById("estado").textContent = "Não encontrado";
-  document.getElementById("local").textContent = "—";
+async function procurarPorNome(casa, fora){
+  const variantes = [];
 
-  leitura.innerHTML = mensagem;
-  aviso.style.display = "block";
-  aviso.innerHTML =
-    "⚠️ O Caçador não encontrou dados suficientes para este nome. " +
-    "Tente escrever os nomes completos, por exemplo: " +
-    "<b>Manchester United vs Newcastle</b>.";
+  if(casa && fora){
+    variantes.push(casa + "_vs_" + fora);
+    variantes.push(fora + "_vs_" + casa);
+    variantes.push(casa + " vs " + fora);
+    variantes.push(fora + " vs " + casa);
+  }else{
+    variantes.push(casa);
+  }
+
+  for(const v of variantes){
+    try{
+      const data = await getJSON(
+        API + "/searchevents.php?e=" + encodeURIComponent(v.replace(/\\s+/g,"_"))
+      );
+      const lista = data.events || [];
+      const achado = lista.find(ev => eventoCombina(ev,casa,fora));
+      if(achado) return achado;
+    }catch(e){}
+  }
+  return null;
+}
+
+function dataISO(offset){
+  const d = new Date();
+  d.setDate(d.getDate()+offset);
+  return d.toISOString().slice(0,10);
+}
+
+async function procurarPorDias(casa, fora){
+  // Mantemos a busca abaixo do limite gratuito de 30 pedidos/minuto.
+  // 8 dias = no máximo 8 pedidos nesta etapa.
+  for(let i=0;i<=7;i++){
+    const dia = dataISO(i);
+    try{
+      const data = await getJSON(
+        API + "/eventsday.php?d=" + dia + "&s=Soccer"
+      );
+      const lista = data.events || [];
+      const achado = lista.find(ev => eventoCombina(ev,casa,fora));
+      if(achado) return achado;
+    }catch(e){}
+  }
+  return null;
 }
 
 async function analisarJogo(){
-  const input = document.getElementById("jogo");
-  const btn = document.getElementById("btn");
-  const status = document.getElementById("status");
-  const resultado = document.getElementById("resultado");
-  const aviso = document.getElementById("aviso");
-
-  const texto = limparTexto(input.value);
-
+  const texto = $("jogo").value.trim();
   if(!texto){
-    input.focus();
-    status.textContent = "Digite primeiro o nome do jogo.";
-    resultado.classList.remove("show");
+    alert("Digite o nome do jogo. Ex.: Manchester United vs Newcastle");
     return;
   }
 
-  const partes = separarJogo(texto);
-
-  if(!partes.casa || !partes.fora){
-    resultado.classList.add("show");
-    document.getElementById("nomeJogo").textContent = texto;
-    document.getElementById("leitura").innerHTML =
-      "Para a V1 encontrar o jogo com maior facilidade, escreva no formato " +
-      "<b>Equipa A vs Equipa B</b>.";
-    aviso.style.display = "block";
-    aviso.innerHTML =
-      "Exemplo: <b>Manchester United vs Newcastle</b>";
-    status.textContent = "";
-    return;
-  }
-
-  btn.disabled = true;
-  status.innerHTML = '<span class="spinner"></span>A procurar o jogo...';
-  resultado.classList.remove("show");
-  aviso.style.display = "none";
+  const [casa, fora] = separarJogo(texto);
+  $("btn").disabled = true;
+  $("resultado").style.display = "none";
+  $("status").style.display = "block";
+  $("status").className = "status";
+  $("status").textContent = "🔎 A procurar o jogo...";
 
   try{
-    const nomeBusca = encodeURIComponent(
-      partes.casa + "_vs_" + partes.fora
-    );
+    let evento = await procurarPorNome(casa,fora);
 
-    const url = API_BASE + "/searchevents.php?e=" + nomeBusca;
-
-    const resposta = await fetch(url);
-
-    if(!resposta.ok){
-      throw new Error("Falha na ligação");
+    if(!evento){
+      $("status").textContent = "📅 Nome direto não encontrou. A procurar nos próximos 8 dias...";
+      evento = await procurarPorDias(casa,fora);
     }
 
-    const dados = await resposta.json();
-    const eventos = dados.events || [];
-
-    if(!eventos.length){
-      mostrarErro(
-        "Não encontrei um evento correspondente ao nome informado."
-      );
-      status.textContent = "";
-      return;
-    }
-
-    const evento = eventos[0];
-
-    document.getElementById("nomeJogo").textContent =
-      (evento.strHomeTeam || partes.casa) +
-      " vs " +
-      (evento.strAwayTeam || partes.fora);
-
-    document.getElementById("competicao").textContent =
-      evento.strLeague || "Não disponível";
-
-    let dataTexto = formatarData(evento.dateEvent);
-    const hora = formatarHora(evento.strTime);
-    if(hora) dataTexto += " • " + hora;
-
-    document.getElementById("data").textContent = dataTexto;
-
-    document.getElementById("estado").textContent =
-      estadoJogo(evento);
-
-    const local = evento.strVenue ||
-                  evento.strCity ||
-                  "Não disponível";
-
-    document.getElementById("local").textContent = local;
-
-    document.getElementById("leitura").innerHTML =
-      gerarLeitura(evento);
-
-    if(evento.intHomeScore !== null &&
-       evento.intHomeScore !== undefined){
-      aviso.style.display = "block";
-      aviso.innerHTML =
-        "ℹ️ Resultado registado na fonte: <b>" +
-        evento.intHomeScore + " - " +
-        evento.intAwayScore + "</b>.";
+    if(evento){
+      $("status").className = "status ok";
+      $("status").textContent = "✅ Jogo encontrado.";
+      mostrarEvento(evento);
     }else{
-      aviso.style.display = "none";
+      $("status").className = "status warn";
+      $("status").textContent = "⚠️ O jogo não foi encontrado na base de dados.";
+      $("resultado").style.display = "block";
+      $("confronto").textContent = casa + (fora ? " vs " + fora : "");
+      $("competicao").textContent = "—";
+      $("data").textContent = "—";
+      $("estado").textContent = "Não encontrado";
+      $("local").textContent = "—";
+      $("leitura").textContent =
+        "Não encontrei esse confronto na base disponível. Isso não significa que o jogo não exista; significa apenas que a fonte usada pela V1.1 não devolveu esse evento.";
     }
-
-    resultado.classList.add("show");
-    status.textContent = "Jogo encontrado.";
-
-  }catch(erro){
-    console.error(erro);
-
-    resultado.classList.add("show");
-    document.getElementById("nomeJogo").textContent = texto;
-    document.getElementById("leitura").innerHTML =
-      "Não foi possível consultar os dados neste momento.";
-    aviso.style.display = "block";
-    aviso.innerHTML =
-      "⚠️ Verifique a ligação à internet e tente novamente.";
-    status.textContent = "";
+  }catch(err){
+    $("status").className = "status err";
+    $("status").textContent = "❌ Erro ao consultar os dados.";
   }finally{
-    btn.disabled = false;
+    $("btn").disabled = false;
   }
 }
+
+$("jogo").addEventListener("keydown", e=>{
+  if(e.key === "Enter") analisarJogo();
+});
 </script>
 </body>
 </html>
