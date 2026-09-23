@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Caçador IA V2.1</title>
+<title>Caçador IA V2.2</title>
 
 <style>
 
@@ -15,58 +15,32 @@
 body{
   margin:0;
   font-family:Arial,sans-serif;
-  background:#0f172a;
+  background:#0b1020;
   color:#fff;
 }
 
 .container{
-  width:100%;
   max-width:700px;
   margin:auto;
   padding:20px;
 }
 
-header{
+h1{
   text-align:center;
+  margin-bottom:5px;
+}
+
+.subtitulo{
+  text-align:center;
+  color:#aaa;
   margin-bottom:20px;
 }
 
-header h1{
-  margin:0;
-  font-size:32px;
-}
-
-header p{
-  color:#cbd5e1;
-  margin-top:8px;
-}
-
-.firebase{
-  background:#334155;
-  padding:12px;
-  border-radius:10px;
-  text-align:center;
-  margin-bottom:18px;
-  font-size:14px;
-}
-
-.firebase.ok{
-  background:#14532d;
-}
-
-.firebase.err{
-  background:#7f1d1d;
-}
-
-.firebase.warn{
-  background:#78350f;
-}
-
 .card{
-  background:#1e293b;
-  padding:20px;
+  background:#151c32;
   border-radius:15px;
-  margin-bottom:18px;
+  padding:20px;
+  margin-bottom:15px;
   box-shadow:0 5px 20px rgba(0,0,0,.25);
 }
 
@@ -78,22 +52,24 @@ label{
 
 input{
   width:100%;
-  padding:15px;
-  border:none;
+  padding:14px;
   border-radius:10px;
+  border:1px solid #39425d;
+  background:#0e1426;
+  color:#fff;
   font-size:16px;
   outline:none;
-  margin-bottom:12px;
 }
 
 button{
   width:100%;
-  padding:15px;
-  border:none;
+  padding:14px;
+  margin-top:12px;
+  border:0;
   border-radius:10px;
-  background:#22c55e;
-  color:#fff;
-  font-size:17px;
+  background:#1877f2;
+  color:white;
+  font-size:16px;
   font-weight:bold;
   cursor:pointer;
 }
@@ -102,51 +78,63 @@ button:active{
   transform:scale(.98);
 }
 
+.firebase{
+  text-align:center;
+  padding:8px;
+  margin-bottom:15px;
+  border-radius:8px;
+  font-size:14px;
+}
+
+.firebase.ok{
+  background:#123d29;
+  color:#58e39a;
+}
+
+.firebase.err{
+  background:#451c22;
+  color:#ff7b86;
+}
+
+.firebase.loading{
+  background:#403713;
+  color:#ffd95c;
+}
+
 .status{
   margin-top:15px;
   padding:12px;
-  border-radius:10px;
-  background:#334155;
-  color:#e2e8f0;
+  border-radius:8px;
+  background:#10172a;
+  color:#ddd;
   line-height:1.5;
 }
 
-.result{
+.resultado{
   display:none;
 }
 
-.result h2{
-  text-align:center;
-  margin-top:0;
+.item{
+  margin-bottom:12px;
 }
 
-.info{
-  line-height:1.7;
+.item strong{
+  color:#63a4ff;
 }
 
-.info strong{
-  color:#94a3b8;
-}
-
-.reading{
-  margin-top:18px;
+.leitura{
+  margin-top:15px;
   padding:15px;
   border-radius:10px;
-  background:#0f172a;
+  background:#0e1629;
   line-height:1.6;
 }
 
-.footer{
+.rodape{
   text-align:center;
-  color:#94a3b8;
+  color:#777;
   font-size:13px;
-  margin-top:25px;
-}
-
-.small{
-  font-size:13px;
-  color:#94a3b8;
-  margin-top:8px;
+  margin-top:20px;
 }
 
 </style>
@@ -156,159 +144,144 @@ button:active{
 
 <div class="container">
 
-<header>
+  <h1>🧠 Caçador IA</h1>
 
-<h1>🎯 Caçador IA</h1>
+  <div class="subtitulo">
+    Análise e comparação de informações de jogos
+  </div>
 
-<p>Análise e comparação de informações de jogos</p>
+  <div id="firebaseStatus" class="firebase loading">
+    🔄 Firebase: a iniciar...
+  </div>
 
-</header>
+  <div class="card">
 
+    <label for="nomeJogo">
+      🔎 Digite o nome do jogo
+    </label>
 
-<!-- STATUS FIREBASE -->
+    <input
+      id="nomeJogo"
+      type="text"
+      placeholder="Ex.: Manchester United vs Chelsea"
+    >
 
-<div id="firebaseStatus" class="firebase">
-☁️ Firebase: a ligar...
-</div>
+    <button id="btnBuscar">
+      🏹 Procurar jogo
+    </button>
 
+    <div id="status" class="status">
+      Digite o nome de um jogo para começar.
+    </div>
 
-<!-- PESQUISA -->
-
-<div class="card">
-
-<label for="jogo">
-Nome do jogo
-</label>
-
-<input
-  id="jogo"
-  type="text"
-  placeholder="Ex: Manchester United vs Chelsea"
-  autocomplete="off"
->
-
-<button id="btnPesquisar">
-🔎 Procurar jogo
-</button>
-
-<div id="status" class="status">
-Digite o nome de um jogo para começar.
-</div>
-
-</div>
+  </div>
 
 
-<!-- RESULTADO -->
+  <div id="resultado" class="card resultado">
 
-<div id="resultado" class="card result">
+    <h2>⚽ Jogo encontrado</h2>
 
-<h2>⚽ Resultado da pesquisa</h2>
+    <div class="item">
+      <strong>Confronto:</strong>
+      <span id="confronto">—</span>
+    </div>
 
-<div class="info">
+    <div class="item">
+      <strong>Competição:</strong>
+      <span id="competicao">—</span>
+    </div>
 
-<p>
-<strong>Confronto:</strong><br>
-<span id="confronto">—</span>
-</p>
+    <div class="item">
+      <strong>Data:</strong>
+      <span id="data">—</span>
+    </div>
 
-<p>
-<strong>Competição:</strong><br>
-<span id="competicao">—</span>
-</p>
+    <div class="item">
+      <strong>Estado:</strong>
+      <span id="estado">—</span>
+    </div>
 
-<p>
-<strong>Data:</strong><br>
-<span id="data">—</span>
-</p>
+    <div class="item">
+      <strong>Local:</strong>
+      <span id="local">—</span>
+    </div>
 
-<p>
-<strong>Estado:</strong><br>
-<span id="estado">—</span>
-</p>
+    <div class="leitura">
 
-<p>
-<strong>Local:</strong><br>
-<span id="local">—</span>
-</p>
+      <h3>🧠 Leitura do Caçador</h3>
 
-</div>
+      <div id="leitura">
+        —
+      </div>
+
+    </div>
+
+  </div>
 
 
-<div class="reading">
-
-<strong>🧠 Leitura do Caçador</strong>
-
-<p id="leitura">
-Aguardando análise...
-</p>
+  <div class="rodape">
+    Caçador IA V2.2<br>
+    Informações obtidas através do TheSportsDB.
+  </div>
 
 </div>
 
-</div>
-
-
-<div class="footer">
-
-Caçador IA V2.1<br>
-Informações obtidas através do TheSportsDB.
-
-</div>
-
-</div>
-
-
-<!-- =====================================================
-     FIREBASE
-===================================================== -->
 
 <script type="module">
 
+/* =====================================================
+   FIREBASE
+===================================================== */
+
 import {
   initializeApp
-} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 import {
   getFirestore,
   collection,
   addDoc,
   serverTimestamp
-} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
-
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 import {
   getAuth,
   signInAnonymously
-} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
-
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 
 /* =====================================================
-   CONFIGURAÇÃO FIREBASE
+   CONFIGURAÇÃO DO FIREBASE
 ===================================================== */
 
 const firebaseConfig = {
 
-  apiKey: "AIzaSyBslVjFWx2R-zrNpQrWFYoy2-RaYTTu3k0",
+  apiKey:
+    "AIzaSyBslVjFWx2R-zrNpQrWFYoy2-RaYTTu3k0",
 
-  authDomain: "cacador-ia.firebaseapp.com",
+  authDomain:
+    "cacador-ia.firebaseapp.com",
 
-  projectId: "cacador-ia",
+  projectId:
+    "cacador-ia",
 
-  storageBucket: "cacador-ia.firebasestorage.app",
+  storageBucket:
+    "cacador-ia.firebasestorage.app",
 
-  messagingSenderId: "296605109235",
+  messagingSenderId:
+    "296605109235",
 
-  appId: "1:296605109235:web:e35f9127d95d12fa266086",
+  appId:
+    "1:296605109235:web:e35f9127d95d12fa266086",
 
-  measurementId: "G-GLKDSESH67"
+  measurementId:
+    "G-GLKDSESH67"
 
 };
 
 
-
 /* =====================================================
-   INICIALIZAR FIREBASE
+   INICIALIZAÇÃO
 ===================================================== */
 
 const app = initializeApp(firebaseConfig);
@@ -317,330 +290,305 @@ const db = getFirestore(app);
 
 const auth = getAuth(app);
 
-
 let firebasePronto = false;
 
 
-
 /* =====================================================
-   LOGIN ANÔNIMO
+   ELEMENTOS
 ===================================================== */
 
-try{
+const $ = id => document.getElementById(id);
 
-  document.getElementById("firebaseStatus").textContent =
-    "🔄 Firebase: a iniciar...";
+const firebaseStatus =
+  $("firebaseStatus");
 
+const status =
+  $("status");
 
-  await signInAnonymously(auth);
+const resultado =
+  $("resultado");
 
+const btnBuscar =
+  $("btnBuscar");
 
-  firebasePronto = true;
-
-
-  document.getElementById("firebaseStatus").textContent =
-    "☁️ Firebase: conectado";
-
-
-  document.getElementById("firebaseStatus").className =
-    "firebase ok";
+const nomeJogo =
+  $("nomeJogo");
 
 
-}catch(error){
+/* =====================================================
+   FIREBASE - LOGIN ANÔNIMO
+===================================================== */
 
-  console.error("Firebase Auth:", error);
+async function iniciarFirebase(){
+
+  try{
+
+    firebaseStatus.textContent =
+      "🔄 Firebase: a iniciar...";
+
+    firebaseStatus.className =
+      "firebase loading";
 
 
-  document.getElementById("firebaseStatus").textContent =
-    "❌ Firebase: " +
-    (error.code || error.message);
+    await signInAnonymously(auth);
 
 
-  document.getElementById("firebaseStatus").className =
-    "firebase err";
+    firebasePronto = true;
+
+
+    firebaseStatus.textContent =
+      "☁️ Firebase: conectado";
+
+    firebaseStatus.className =
+      "firebase ok";
+
+
+    console.log(
+      "Firebase conectado. UID:",
+      auth.currentUser?.uid
+    );
+
+
+  }catch(error){
+
+    firebasePronto = false;
+
+
+    console.error(
+      "Erro Firebase Auth:",
+      error
+    );
+
+
+    firebaseStatus.textContent =
+      "❌ Firebase: " +
+      (error.code || error.message);
+
+    firebaseStatus.className =
+      "firebase err";
+
+  }
 
 }
 
 
-
 /* =====================================================
-   THE SPORTS DB
-===================================================== */
-
-const API =
-  "https://www.thesportsdb.com/api/v1/json/123";
-
-
-
-/* =====================================================
-   FUNÇÃO $
-===================================================== */
-
-const $ = id =>
-  document.getElementById(id);
-
-
-
-/* =====================================================
-   NORMALIZAR TEXTO
-===================================================== */
-
-function normalizar(texto){
-
-  return (texto || "")
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g,"")
-    .replace(/\s+/g," ")
-    .trim();
-
-}
-
-
-
-/* =====================================================
-   FORMATAR DATA
+   FORMATAÇÃO DA DATA
 ===================================================== */
 
 function formatarData(evento){
 
-  if(!evento) return "—";
+  const data =
+    evento.dateEvent || "";
 
+  const hora =
+    evento.strTime || "";
 
-  if(evento.dateEvent){
-
-    let data = evento.dateEvent;
-
-    if(evento.strTime){
-
-      return data + " " + evento.strTime;
-
-    }
-
-    return data;
-
+  if(!data){
+    return "—";
   }
 
-
-  return "—";
+  return (
+    data +
+    (hora ? " " + hora : "")
+  );
 
 }
 
 
-
 /* =====================================================
-   ESTADO DO JOGO
+   ESTADO DO EVENTO
 ===================================================== */
 
 function estadoEvento(evento){
 
-  if(!evento) return "—";
-
-
-  if(evento.strStatus){
-
-    return evento.strStatus;
-
-  }
-
-
-  if(evento.intHomeScore !== null &&
-     evento.intHomeScore !== undefined &&
-     evento.intAwayScore !== null &&
-     evento.intAwayScore !== undefined){
-
-    return "Finalizado";
-
-  }
-
-
-  return "Agendado";
+  return evento.strStatus ||
+         evento.strProgress ||
+         "NS";
 
 }
-
 
 
 /* =====================================================
    LEITURA DO CAÇADOR
 ===================================================== */
 
-function gerarLeitura(evento){
+function criarLeitura(evento){
 
-  if(!evento){
-
-    return "Não foi encontrado um jogo correspondente.";
-
-  }
-
-
-  let texto = "";
-
-
-  if(evento.strStatus){
-
-    texto +=
-      "Estado atual: " +
-      evento.strStatus +
-      ". ";
-
-  }else{
-
-    texto +=
-      "O jogo foi encontrado na base de dados. ";
-
-  }
-
-
-  if(evento.strLeague){
-
-    texto +=
-      "Competição: " +
-      evento.strLeague +
-      ". ";
-
-  }
-
-
-  if(evento.strVenue){
-
-    texto +=
-      "Local: " +
-      evento.strVenue +
-      ". ";
-
-  }
-
-
-  texto +=
-    "Esta leitura apresenta informações encontradas e não garante o resultado do jogo.";
-
-
-  return texto;
-
-}
-
-
-
-/* =====================================================
-   MOSTRAR RESULTADO
-===================================================== */
-
-function mostrarEvento(evento){
-
-  $("resultado").style.display = "block";
-
-
-  $("confronto").textContent =
-    (evento.strHomeTeam || "—") +
-    " vs " +
-    (evento.strAwayTeam || "—");
-
-
-  $("competicao").textContent =
-    evento.strLeague || "—";
-
-
-  $("data").textContent =
-    formatarData(evento);
-
-
-  $("estado").textContent =
+  const estado =
     estadoEvento(evento);
 
+  const competicao =
+    evento.strLeague ||
+    "—";
 
-  $("local").textContent =
-    evento.strVenue || "—";
+  const local =
+    evento.strVenue ||
+    "—";
 
 
-  $("leitura").textContent =
-    gerarLeitura(evento);
+  return (
+    "Estado atual: " +
+    estado +
+    ". Competição: " +
+    competicao +
+    ". Local: " +
+    local +
+    ". Esta leitura apresenta informações encontradas e não garante o resultado do jogo."
+  );
 
 }
 
 
-
 /* =====================================================
-   GUARDAR HISTÓRICO NO FIREBASE
+   GUARDAR NO FIRESTORE
 ===================================================== */
 
 async function guardarHistorico(evento){
 
   if(!firebasePronto){
 
-    return false;
+    return {
+      sucesso:false,
+      erro:"Firebase não está autenticado."
+    };
 
   }
 
 
   try{
 
-    await addDoc(
+    const confronto =
+      (evento.strHomeTeam || "") +
+      " vs " +
+      (evento.strAwayTeam || "");
 
-      collection(db,"historico"),
 
-      {
+    const leitura =
+      criarLeitura(evento);
 
-        jogo:
-          (evento.strHomeTeam || "") +
-          " vs " +
-          (evento.strAwayTeam || ""),
 
-        confronto:
-          (evento.strHomeTeam || "") +
-          " vs " +
-          (evento.strAwayTeam || ""),
+    const dados = {
 
-        competicao:
-          evento.strLeague || "—",
+      jogo: confronto,
 
-        data:
-          formatarData(evento),
+      confronto: confronto,
 
-        estado:
-          estadoEvento(evento),
+      competicao:
+        evento.strLeague || "—",
 
-        local:
-          evento.strVenue || "—",
+      data:
+        formatarData(evento),
 
-        leitura:
-          $("leitura").textContent,
+      estado:
+        estadoEvento(evento),
 
-        criadoEm:
-          serverTimestamp()
+      local:
+        evento.strVenue || "—",
 
-      }
+      leitura:
+        leitura,
 
+      criadoEm:
+        serverTimestamp()
+
+    };
+
+
+    console.log(
+      "Tentando guardar no Firestore:",
+      dados
     );
 
 
-    return true;
+    const documento =
+      await addDoc(
+        collection(db, "historico"),
+        dados
+      );
+
+
+    console.log(
+      "Documento criado:",
+      documento.id
+    );
+
+
+    return {
+      sucesso:true,
+      id:documento.id
+    };
 
 
   }catch(error){
 
     console.error(
-      "Erro ao guardar histórico:",
+      "ERRO FIRESTORE:",
       error
     );
 
 
-    return false;
+    return {
+
+      sucesso:false,
+
+      erro:
+        (error.code || "") +
+        " - " +
+        (error.message || error)
+
+    };
 
   }
 
 }
 
 
-
 /* =====================================================
-   PROCURAR JOGO POR NOME
+   MOSTRAR RESULTADO
 ===================================================== */
 
-async function procurarPorNome(nome){
+function mostrarResultado(evento){
+
+  const confronto =
+    (evento.strHomeTeam || "") +
+    " vs " +
+    (evento.strAwayTeam || "");
+
+
+  $("confronto").textContent =
+    confronto;
+
+  $("competicao").textContent =
+    evento.strLeague || "—";
+
+  $("data").textContent =
+    formatarData(evento);
+
+  $("estado").textContent =
+    estadoEvento(evento);
+
+  $("local").textContent =
+    evento.strVenue || "—";
+
+  $("leitura").textContent =
+    criarLeitura(evento);
+
+
+  resultado.style.display =
+    "block";
+
+}
+
+
+/* =====================================================
+   BUSCAR JOGO PELO NOME
+===================================================== */
+
+async function buscarPorNome(nome){
 
   const url =
-    API +
-    "/searchevents.php?e=" +
+    "https://www.thesportsdb.com/api/v1/json/123/searchevents.php?e=" +
     encodeURIComponent(nome);
 
 
@@ -651,7 +599,8 @@ async function procurarPorNome(nome){
   if(!resposta.ok){
 
     throw new Error(
-      "Erro HTTP " + resposta.status
+      "Erro HTTP: " +
+      resposta.status
     );
 
   }
@@ -664,234 +613,297 @@ async function procurarPorNome(nome){
   if(
     dados &&
     dados.event &&
-    dados.event.length
+    dados.event.length > 0
   ){
 
-    return dados.event;
+    return dados.event[0];
 
   }
 
 
-  return [];
+  return null;
 
 }
 
 
-
 /* =====================================================
-   PROCURAR JOGOS DOS PRÓXIMOS DIAS
+   BUSCAR JOGOS DOS PRÓXIMOS DIAS
 ===================================================== */
 
-async function procurarProximosDias(nome){
+async function buscarJogosDoDia(data){
 
-  const alvo =
+  const url =
+    "https://www.thesportsdb.com/api/v1/json/123/eventsday.php?d=" +
+    data +
+    "&s=Soccer";
+
+
+  const resposta =
+    await fetch(url);
+
+
+  if(!resposta.ok){
+
+    return [];
+
+  }
+
+
+  const dados =
+    await resposta.json();
+
+
+  return dados.events || [];
+
+}
+
+
+/* =====================================================
+   COMPARAR NOMES
+===================================================== */
+
+function normalizar(texto){
+
+  return texto
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g,"")
+    .replace(/[^a-z0-9]/g,"");
+
+}
+
+
+/* =====================================================
+   PROCURAR NOS JOGOS DO DIA
+===================================================== */
+
+function encontrarJogo(lista,nome){
+
+  const pesquisa =
     normalizar(nome);
 
 
-  const agora =
-    new Date();
+  for(
+    const jogo of lista
+  ){
 
-
-  for(let i = 0; i < 8; i++){
-
-    const data =
-      new Date(agora);
-
-
-    data.setDate(
-      agora.getDate() + i
-    );
-
-
-    const ano =
-      data.getFullYear();
-
-
-    const mes =
-      String(
-        data.getMonth() + 1
-      ).padStart(2,"0");
-
-
-    const dia =
-      String(
-        data.getDate()
-      ).padStart(2,"0");
-
-
-    const dataTexto =
-      ano + "-" +
-      mes + "-" +
-      dia;
-
-
-    const url =
-      API +
-      "/eventsday.php?d=" +
-      dataTexto +
-      "&s=Soccer";
-
-
-    try{
-
-      const resposta =
-        await fetch(url);
-
-
-      if(!resposta.ok){
-
-        continue;
-
-      }
-
-
-      const dados =
-        await resposta.json();
-
-
-      const eventos =
-        dados.event || [];
-
-
-      const encontrados =
-        eventos.filter(evento => {
-
-          const casa =
-            normalizar(
-              evento.strHomeTeam
-            );
-
-
-          const fora =
-            normalizar(
-              evento.strAwayTeam
-            );
-
-
-          const confronto =
-            casa +
-            " vs " +
-            fora;
-
-
-          return (
-            confronto.includes(alvo) ||
-            casa.includes(alvo) ||
-            fora.includes(alvo) ||
-            alvo.includes(casa) ||
-            alvo.includes(fora)
-          );
-
-        });
-
-
-      if(encontrados.length){
-
-        return encontrados;
-
-      }
-
-    }catch(error){
-
-      console.error(
-        "Erro ao pesquisar:",
-        error
+    const casa =
+      normalizar(
+        jogo.strHomeTeam || ""
       );
+
+    const fora =
+      normalizar(
+        jogo.strAwayTeam || ""
+      );
+
+
+    const confronto =
+      casa + fora;
+
+
+    if(
+      confronto.includes(pesquisa) ||
+      pesquisa.includes(casa) ||
+      pesquisa.includes(fora)
+    ){
+
+      return jogo;
+
+    }
+
+
+    const nomeCasaFora =
+      normalizar(
+        (jogo.strHomeTeam || "") +
+        "vs" +
+        (jogo.strAwayTeam || "")
+      );
+
+
+    if(
+      nomeCasaFora.includes(pesquisa)
+    ){
+
+      return jogo;
 
     }
 
   }
 
 
-  return [];
+  return null;
 
 }
 
 
-
 /* =====================================================
-   PESQUAR
+   BUSCAR
 ===================================================== */
 
-async function pesquisar(){
+async function procurarJogo(){
 
   const nome =
-    $("jogo").value.trim();
-
-
-  $("resultado").style.display =
-    "none";
+    nomeJogo.value.trim();
 
 
   if(!nome){
 
-    $("status").textContent =
-      "⚠️ Digite o nome de um jogo.";
+    status.textContent =
+      "⚠️ Digite o nome do jogo.";
+
+    resultado.style.display =
+      "none";
 
     return;
 
   }
 
 
-  $("status").textContent =
-    "🔎 A procurar: " +
-    nome +
-    "...";
+  btnBuscar.disabled =
+    true;
+
+
+  btnBuscar.textContent =
+    "🔎 A procurar...";
+
+
+  status.textContent =
+    "🔎 Procurando informações...";
+
+
+  resultado.style.display =
+    "none";
 
 
   try{
 
-    let eventos =
-      await procurarPorNome(nome);
+    let evento =
+      await buscarPorNome(nome);
 
 
-    if(!eventos.length){
+    /* ---------------------------------------------
+       SEGUNDA TENTATIVA:
+       procurar nos próximos 8 dias
+    --------------------------------------------- */
 
-      $("status").textContent =
-        "🔎 Pesquisa direta não encontrou. A procurar nos próximos dias...";
+    if(!evento){
+
+      const hoje =
+        new Date();
 
 
-      eventos =
-        await procurarProximosDias(nome);
+      for(
+        let i = 0;
+        i < 8;
+        i++
+      ){
+
+        const data =
+          new Date(hoje);
+
+
+        data.setDate(
+          hoje.getDate() + i
+        );
+
+
+        const ano =
+          data.getFullYear();
+
+
+        const mes =
+          String(
+            data.getMonth()+1
+          ).padStart(2,"0");
+
+
+        const dia =
+          String(
+            data.getDate()
+          ).padStart(2,"0");
+
+
+        const dataFormatada =
+          ano +
+          "-" +
+          mes +
+          "-" +
+          dia;
+
+
+        const jogos =
+          await buscarJogosDoDia(
+            dataFormatada
+          );
+
+
+        evento =
+          encontrarJogo(
+            jogos,
+            nome
+          );
+
+
+        if(evento){
+
+          break;
+
+        }
+
+      }
 
     }
 
 
-    if(!eventos.length){
+    /* ---------------------------------------------
+       NENHUM JOGO
+    --------------------------------------------- */
 
-      $("status").textContent =
+    if(!evento){
+
+      status.textContent =
         "❌ Nenhum jogo encontrado com esse nome.";
-
-
-      $("leitura").textContent =
-        "Não foi encontrada uma correspondência suficiente na base consultada.";
-
 
       return;
 
     }
 
 
-    const evento =
-      eventos[0];
+    /* ---------------------------------------------
+       MOSTRAR JOGO
+    --------------------------------------------- */
+
+    mostrarResultado(evento);
 
 
-    mostrarEvento(evento);
+    /* ---------------------------------------------
+       GUARDAR NO FIRESTORE
+    --------------------------------------------- */
+
+    status.textContent =
+      "⏳ Jogo encontrado. A guardar no Firebase...";
 
 
-    const guardado =
+    const resultadoFirebase =
       await guardarHistorico(evento);
 
 
-    if(guardado){
+    if(
+      resultadoFirebase.sucesso
+    ){
 
-      $("status").textContent =
-        "✅ Jogo encontrado e guardado no Firebase.";
+      status.innerHTML =
+        "✅ <strong>Jogo encontrado e guardado no Firebase.</strong><br>" +
+        "ID do documento: " +
+        resultadoFirebase.id;
 
     }else{
 
-      $("status").textContent =
-        "✅ Jogo encontrado. Firebase ainda não guardou este registo.";
+      status.innerHTML =
+        "⚠️ <strong>Jogo encontrado, mas não foi guardado.</strong><br><br>" +
+        "Erro do Firebase:<br>" +
+        resultadoFirebase.erro;
 
     }
 
@@ -904,49 +916,60 @@ async function pesquisar(){
     );
 
 
-    $("status").textContent =
-      "❌ Erro: " +
+    status.innerHTML =
+      "❌ <strong>Erro ao procurar o jogo.</strong><br>" +
       (error.message || error);
+
+  }finally{
+
+    btnBuscar.disabled =
+      false;
+
+    btnBuscar.textContent =
+      "🏹 Procurar jogo";
 
   }
 
 }
 
 
-
 /* =====================================================
    BOTÃO
 ===================================================== */
 
-$("btnPesquisar")
-  .addEventListener(
-    "click",
-    pesquisar
-  );
-
+btnBuscar.addEventListener(
+  "click",
+  procurarJogo
+);
 
 
 /* =====================================================
-   TECLA ENTER
+   ENTER NO CAMPO
 ===================================================== */
 
-$("jogo")
-  .addEventListener(
-    "keydown",
-    function(event){
+nomeJogo.addEventListener(
+  "keydown",
+  event => {
 
-      if(event.key === "Enter"){
+    if(
+      event.key === "Enter"
+    ){
 
-        pesquisar();
-
-      }
+      procurarJogo();
 
     }
-  );
+
+  }
+);
 
 
+/* =====================================================
+   INICIAR FIREBASE
+===================================================== */
+
+iniciarFirebase();
 
 </script>
 
 </body>
-</html>
+  </html>
