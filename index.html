@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Caçador IA V2.1</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#0b1220;
+  color:#fff;
+}
+
+.container{
+  width:min(92%,520px);
+  margin:30px auto;
+}
+
+.card{
+  background:#121c2e;
+  border:1px solid #263653;
+  border-radius:18px;
+  padding:22px;
+  box-shadow:0 10px 30px rgba(0,0,0,.25);
+}
+
+h1{
+  margin:0 0 6px;
+  text-align:center;
+  font-size:28px;
+}
+
+.sub{
+  text-align:center;
+  color:#9fb0c8;
+  margin-bottom:22px;
+}
+
+.firebase{
+  text-align:center;
+  font-size:12px;
+  margin-bottom:18px;
+  color:#ffd166;
+}
+
+label{
+  display:block;
+  margin-bottom:8px;
+  font-weight:bold;
+}
+
+input{
+  width:100%;
+  padding:15px;
+  border-radius:12px;
+  border:1px solid #40516d;
+  background:#0b1220;
+  color:#fff;
+  font-size:16px;
+  outline:none;
+}
+
+button{
+  width:100%;
+  margin-top:12px;
+  padding:15px;
+  border:0;
+  border-radius:12px;
+  background:#19c37d;
+  color:#06130d;
+  font-size:16px;
+  font-weight:bold;
+}
+
+button:disabled{
+  opacity:.6;
+}
+
+.status{
+  margin-top:15px;
+  padding:12px;
+  border-radius:10px;
+  background:#0d1728;
+  color:#b9c8dd;
+  display:none;
+}
+
+.result{
+  margin-top:18px;
+  display:none;
+}
+
+.row{
+  padding:10px 0;
+  border-bottom:1px solid #263653;
+}
+
+.row:last-child{
+  border-bottom:0;
+}
+
+.key{
+  color:#8fa4c0;
+  font-size:13px;
+}
+
+.value{
+  margin-top:3px;
+  font-size:16px;
+}
+
+.reading{
+  margin-top:15px;
+  padding:15px;
+  border-radius:12px;
+  background:#0d1728;
+  line-height:1.5;
+}
+
+.small{
+  margin-top:15px;
+  color:#8092aa;
+  font-size:12px;
+  line-height:1.45;
+}
+
+.ok{
+  color:#5ee6a8;
+}
+
+.warn{
+  color:#ffd166;
+}
+
+.err{
+  color:#ff7b7b;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="card">
+
+    <h1>🎯 CAÇADOR IA</h1>
+
+    <div class="sub">
+      Analisador de jogos V2.1
+    </div>
+
+    <div id="firebaseStatus" class="firebase">
+      ☁️ Firebase: a ligar...
+    </div>
+
+    <label for="jogo">
+      Digite o jogo
+    </label>
+
+    <input
+      id="jogo"
+      type="text"
+      placeholder="Ex.: Manchester United vs Newcastle"
+    >
+
+    <button id="btn" onclick="analisarJogo()">
+      🔍 ANALISAR JOGO
+    </button>
+
+    <div id="status" class="status"></div>
+
+    <div id="resultado" class="result">
+
+      <div class="row">
+        <div class="key">Confronto</div>
+        <div class="value" id="confronto">—</div>
+      </div>
+
+      <div class="row">
+        <div class="key">Competição</div>
+        <div class="value" id="competicao">—</div>
+      </div>
+
+      <div class="row">
+        <div class="key">Data</div>
+        <div class="value" id="data">—</div>
+      </div>
+
+      <div class="row">
+        <div class="key">Estado</div>
+        <div class="value" id="estado">—</div>
+      </div>
+
+      <div class="row">
+        <div class="key">Local</div>
+        <div class="value" id="local">—</div>
+      </div>
+
+      <div class="reading">
+        <b>🎯 Leitura do Caçador</b>
+
+        <div id="leitura" style="margin-top:8px">
+          —
+        </div>
+      </div>
+
+    </div>
+
+    <div class="small">
+      V2.1 procura primeiro o evento pelo nome e depois procura jogos
+      de futebol dos próximos dias. O resultado encontrado pode ser
+      guardado no histórico do Firebase.
+    </div>
+
+  </div>
+
+</div>
+
+
+<script type="module">
+
+/* =========================================================
+   FIREBASE
+========================================================= */
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+
+import { getAnalytics }
+from "https://www.gstatic.com/firebasejs/12.19.0/firebase-analytics.js";
+
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  serverTimestamp
+}
+from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+import {
+  getAuth,
+  signInAnonymously
+}
+from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+
+const firebaseConfig = {
+
+  apiKey: "AIzaSyBslVjFWx2R-zrNpQrWFYoy2-RaYTTu3k0",
+
+  authDomain: "cacador-ia.firebaseapp.com",
+
+  projectId: "cacador-ia",
+
+  storageBucket: "cacador-ia.firebasestorage.app",
+
+  messagingSenderId: "296605109235",
+
+  appId: "1:296605109235:web:e35f9127d95d12fa266086",
+
+  measurementId: "G-GLKDSESH67"
+
+};
+
+
+/* Inicializar Firebase */
+
+const app = initializeApp(firebaseConfig);
+
+const analytics = getAnalytics(app);
+
+const db = getFirestore(app);
+
+const auth = getAuth(app);
+
+
+/* Login anônimo */
+
+let firebasePronto = false;
+
+try{
+
+  await signInAnonymously(auth);
+
+  firebasePronto = true;
+
+  document.getElementById("firebaseStatus").textContent =
+    "☁️ Firebase: conectado";
+
+  document.getElementById("firebaseStatus").className =
+    "firebase ok";
+
+}catch(error){
+
+  console.error("Firebase Auth:", error);
+
+  document.getElementById("firebaseStatus").textContent =
+    "⚠️ Firebase: configure o acesso";
+
+  document.getElementById("firebaseStatus").className =
+    "firebase warn";
+
+}
+
+
+/* =========================================================
+   THE SPORTS DB
+========================================================= */
+
+const API =
+  "https://www.thesportsdb.com/api/v1/json/123";
+
+
+const $ = id =>
+  document.getElementById(id);
+
+
+/* =========================================================
+   NORMALIZAÇÃO
+========================================================= */
+
+function normalizar(txt){
+
+  return (txt || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g,"")
+    .replace(/&/g," and ")
+    .replace(/[^a-z0-9]+/g," ")
+    .replace(/\b(fc|cf|sc|afc|club|football|futebol)\b/g," ")
+    .replace(/\s+/g," ")
+    .trim();
+
+}
+
+
+/* =========================================================
+   SEPARAR JOGO
+========================================================= */
+
+function separarJogo(txt){
+
+  let s = txt.trim();
+
+  const partes =
+    s.split(/\s+(?:vs?|x)\s+|\s+-\s+/i);
+
+  if(partes.length >= 2){
+
+    return [
+      partes[0].trim(),
+      partes.slice(1).join(" - ").trim()
+    ];
+
+  }
+
+  return [s,""];
+
+}
+
+
+/* =========================================================
+   COMPARAR NOMES
+========================================================= */
+
+function nomesCombinam(a,b){
+
+  const A = normalizar(a);
+
+  const B = normalizar(b);
+
+  if(!A || !B)
+    return false;
+
+  if(A === B)
+    return true;
+
+  if(A.includes(B) || B.includes(A))
+    return true;
+
+  const ta =
+    new Set(A.split(" ").filter(x=>x.length>2));
+
+  const tb =
+    new Set(B.split(" ").filter(x=>x.length>2));
+
+  let comuns = 0;
+
+  ta.forEach(x=>{
+
+    if(tb.has(x))
+      comuns++;
+
+  });
+
+  return comuns >= 1 &&
+         (ta.size <= 3 || tb.size <= 3);
+
+}
+
+
+/* =========================================================
+   EVENTO COMBINA
+========================================================= */
+
+function eventoCombina(ev,casa,fora){
+
+  const h = ev.strHomeTeam || "";
+
+  const a = ev.strAwayTeam || "";
+
+  if(casa && fora){
+
+    return (
+
+      nomesCombinam(casa,h) &&
+      nomesCombinam(fora,a)
+
+    ) ||
+
+    (
+
+      nomesCombinam(casa,a) &&
+      nomesCombinam(fora,h)
+
+    );
+
+  }
+
+  const alvo = normalizar(casa);
+
+  return nomesCombinam(alvo,h) ||
+         nomesCombinam(alvo,a);
+
+}
+
+
+/* =========================================================
+   DATA
+========================================================= */
+
+function formatarData(ev){
+
+  if(!ev.dateEvent)
+    return "—";
+
+  let d = ev.dateEvent;
+
+  if(ev.strTime)
+    d += " • " + ev.strTime.substring(0,5);
+
+  return d;
+
+}
+
+
+/* =========================================================
+   ESTADO
+========================================================= */
+
+function estadoEvento(ev){
+
+  if(ev.strStatus)
+    return ev.strStatus;
+
+  if(
+    ev.intHomeScore != null &&
+    ev.intAwayScore != null
+  ){
+
+    return "Finalizado: " +
+      ev.intHomeScore +
+      " - " +
+      ev.intAwayScore;
+
+  }
+
+  return "Agendado";
+
+}
+
+
+/* =========================================================
+   MOSTRAR EVENTO
+========================================================= */
+
+function mostrarEvento(ev){
+
+  const casa =
+    ev.strHomeTeam || "Casa";
+
+  const fora =
+    ev.strAwayTeam || "Fora";
+
+  $("resultado").style.display =
+    "block";
+
+  $("confronto").textContent =
+    casa + " vs " + fora;
+
+  $("competicao").textContent =
+    ev.strLeague || "—";
+
+  $("data").textContent =
+    formatarData(ev);
+
+  $("estado").textContent =
+    estadoEvento(ev);
+
+  $("local").textContent =
+    ev.strVenue || "—";
+
+
+  let leitura = "";
+
+  const status =
+    (ev.strStatus || "").toLowerCase();
+
+
+  if(
+    status.includes("postpon") ||
+    status.includes("cancel")
+  ){
+
+    leitura =
+      "O evento foi alterado ou cancelado. " +
+      "Não vou tratar este jogo como uma partida normal.";
+
+  }
+
+  else if(
+    ev.intHomeScore != null &&
+    ev.intAwayScore != null
+  ){
+
+    leitura =
+      "O jogo já tem resultado registado " +
+      "na base de dados. Para um prognóstico " +
+      "pré-jogo, seria necessário analisar " +
+      "os dados anteriores à partida.";
+
+  }
+
+  else{
+
+    leitura =
+      "Jogo identificado. O Caçador confirmou " +
+      "o confronto, mas não inventa uma previsão " +
+      "apenas com o nome das equipas.";
+
+  }
+
+
+  $("leitura").textContent =
+    leitura;
+
+}
+
+
+/* =========================================================
+   PEDIDO JSON
+========================================================= */
+
+async function getJSON(url){
+
+  const r =
+    await fetch(url);
+
+  if(!r.ok)
+    throw new Error("HTTP " + r.status);
+
+  return await r.json();
+
+}
+
+
+/* =========================================================
+   PROCURAR POR NOME
+========================================================= */
+
+async function procurarPorNome(casa,fora){
+
+  const variantes = [];
+
+  if(casa && fora){
+
+    variantes.push(
+      casa + "_vs_" + fora
+    );
+
+    variantes.push(
+      fora + "_vs_" + casa
+    );
+
+    variantes.push(
+      casa + " vs " + fora
+    );
+
+    variantes.push(
+      fora + " vs " + casa
+    );
+
+  }else{
+
+    variantes.push(casa);
+
+  }
+
+
+  for(const v of variantes){
+
+    try{
+
+      const data =
+        await getJSON(
+          API +
+          "/searchevents.php?e=" +
+          encodeURIComponent(
+            v.replace(/\s+/g,"_")
+          )
+        );
+
+      const lista =
+        data.events || [];
+
+      const achado =
+        lista.find(
+          ev =>
+            eventoCombina(
+              ev,
+              casa,
+              fora
+            )
+        );
+
+      if(achado)
+        return achado;
+
+    }catch(e){}
+
+  }
+
+  return null;
+
+}
+
+
+/* =========================================================
+   DATA ISO
+========================================================= */
+
+function dataISO(offset){
+
+  const d =
+    new Date();
+
+  d.setDate(
+    d.getDate() + offset
+  );
+
+  return d
+    .toISOString()
+    .slice(0,10);
+
+}
+
+
+/* =========================================================
+   PROCURAR POR DIAS
+========================================================= */
+
+async function procurarPorDias(casa,fora){
+
+  for(let i=0;i<=7;i++){
+
+    const dia =
+      dataISO(i);
+
+    try{
+
+      const data =
+        await getJSON(
+          API +
+          "/eventsday.php?d=" +
+          dia +
+          "&s=Soccer"
+        );
+
+      const lista =
+        data.events || [];
+
+      const achado =
+        lista.find(
+          ev =>
+            eventoCombina(
+              ev,
+              casa,
+              fora
+            )
+        );
+
+      if(achado)
+        return achado;
+
+    }catch(e){}
+
+  }
+
+  return null;
+
+}
+
+
+/* =========================================================
+   GUARDAR NO FIRESTORE
+========================================================= */
+
+async function guardarHistorico(ev){
+
+  if(!firebasePronto)
+    return false;
+
+  try{
+
+    await addDoc(
+      collection(db,"historico"),
+     
