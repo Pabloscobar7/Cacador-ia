@@ -2,974 +2,430 @@
 <html lang="pt">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Caçador IA V2.2</title>
 
 <style>
-
 *{
-  box-sizing:border-box;
+    box-sizing:border-box;
 }
 
 body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:#0b1020;
-  color:#fff;
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#080d1c;
+    color:#fff;
+}
+
+header{
+    text-align:center;
+    padding:22px 14px 12px;
+}
+
+header h1{
+    margin:0;
+    font-size:29px;
+}
+
+header p{
+    margin:8px 0 0;
+    color:#aeb8cf;
+    font-size:15px;
 }
 
 .container{
-  max-width:700px;
-  margin:auto;
-  padding:20px;
-}
-
-h1{
-  text-align:center;
-  margin-bottom:5px;
-}
-
-.subtitulo{
-  text-align:center;
-  color:#aaa;
-  margin-bottom:20px;
-}
-
-.card{
-  background:#151c32;
-  border-radius:15px;
-  padding:20px;
-  margin-bottom:15px;
-  box-shadow:0 5px 20px rgba(0,0,0,.25);
-}
-
-label{
-  display:block;
-  margin-bottom:8px;
-  font-weight:bold;
-}
-
-input{
-  width:100%;
-  padding:14px;
-  border-radius:10px;
-  border:1px solid #39425d;
-  background:#0e1426;
-  color:#fff;
-  font-size:16px;
-  outline:none;
-}
-
-button{
-  width:100%;
-  padding:14px;
-  margin-top:12px;
-  border:0;
-  border-radius:10px;
-  background:#1877f2;
-  color:white;
-  font-size:16px;
-  font-weight:bold;
-  cursor:pointer;
-}
-
-button:active{
-  transform:scale(.98);
-}
-
-.firebase{
-  text-align:center;
-  padding:8px;
-  margin-bottom:15px;
-  border-radius:8px;
-  font-size:14px;
-}
-
-.firebase.ok{
-  background:#123d29;
-  color:#58e39a;
-}
-
-.firebase.err{
-  background:#451c22;
-  color:#ff7b86;
-}
-
-.firebase.loading{
-  background:#403713;
-  color:#ffd95c;
+    width:94%;
+    max-width:720px;
+    margin:auto;
 }
 
 .status{
-  margin-top:15px;
-  padding:12px;
-  border-radius:8px;
-  background:#10172a;
-  color:#ddd;
-  line-height:1.5;
+    padding:13px;
+    border-radius:14px;
+    text-align:center;
+    margin:14px 0;
+    background:#3d1b20;
+    color:#ffadb5;
 }
 
-.resultado{
-  display:none;
+.status.ok{
+    background:#064b30;
+    color:#63e5a5;
 }
 
-.item{
-  margin-bottom:12px;
+.card{
+    background:#11182d;
+    border-radius:23px;
+    padding:21px;
+    margin:16px 0;
+    box-shadow:0 7px 22px #0005;
 }
 
-.item strong{
-  color:#63a4ff;
+h2{
+    margin-top:0;
 }
 
-.leitura{
-  margin-top:15px;
-  padding:15px;
-  border-radius:10px;
-  background:#0e1629;
-  line-height:1.6;
+input,
+select{
+    width:100%;
+    padding:16px;
+    border-radius:14px;
+    border:2px solid #35415f;
+    background:#0c1325;
+    color:#fff;
+    font-size:16px;
+    outline:none;
 }
 
-.rodape{
-  text-align:center;
-  color:#777;
-  font-size:13px;
-  margin-top:20px;
+input:focus,
+select:focus{
+    border-color:#1878ed;
 }
 
+button{
+    width:100%;
+    padding:15px;
+    border:0;
+    border-radius:14px;
+    margin-top:10px;
+    background:#1878ed;
+    color:#fff;
+    font-size:16px;
+    font-weight:bold;
+}
+
+button.secondary{
+    background:#29334d;
+}
+
+button.green{
+    background:#087b4b;
+}
+
+button.orange{
+    background:#9c5a08;
+}
+
+button.red{
+    background:#8a2631;
+}
+
+button:active{
+    transform:scale(.98);
+}
+
+.menu{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:9px;
+    margin:15px 0;
+}
+
+.menu button{
+    margin:0;
+    padding:13px 5px;
+    font-size:14px;
+}
+
+.section{
+    display:none;
+}
+
+.section.active{
+    display:block;
+}
+
+.message{
+    padding:14px;
+    border-radius:13px;
+    background:#0c1325;
+    margin-top:13px;
+    line-height:1.55;
+}
+
+.oktext{
+    color:#5ee5a4;
+}
+
+.badtext{
+    color:#ff7f8a;
+}
+
+.yellow{
+    color:#ffd166;
+}
+
+.blue{
+    color:#65a7ff;
+}
+
+.small{
+    font-size:13px;
+    color:#9faac1;
+}
+
+.game{
+    background:#0d1428;
+    border:1px solid #303a5c;
+    border-radius:18px;
+    padding:17px;
+    margin-top:13px;
+}
+
+.game h3{
+    margin:0 0 10px;
+}
+
+.badge{
+    display:inline-block;
+    padding:6px 10px;
+    border-radius:18px;
+    font-weight:bold;
+    margin-top:5px;
+}
+
+.pending{
+    background:#594800;
+    color:#ffe36b;
+}
+
+.win{
+    background:#075d3b;
+    color:#67efb0;
+}
+
+.loss{
+    background:#681923;
+    color:#ff929c;
+}
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:8px;
+}
+
+.stat{
+    background:#0d1428;
+    border:1px solid #303a5c;
+    border-radius:14px;
+    padding:12px 5px;
+    text-align:center;
+}
+
+.stat strong{
+    display:block;
+    font-size:21px;
+    margin-bottom:4px;
+}
+
+hr{
+    border:0;
+    border-top:1px solid #2b3450;
+    margin:18px 0;
+}
+
+.loading{
+    text-align:center;
+    padding:18px;
+    color:#9fb8dd;
+}
+
+.hidden{
+    display:none;
+}
+
+footer{
+    text-align:center;
+    color:#68748c;
+    padding:25px 10px 40px;
+    font-size:12px;
+}
+
+@media(max-width:480px){
+
+    header h1{
+        font-size:25px;
+    }
+
+    .card{
+        padding:17px;
+    }
+
+    .stats{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
 </style>
 </head>
 
+
 <body>
+
+<header>
+
+<h1>🎯 Caçador IA V2.2</h1>
+
+<p>
+Análise e comparação de informações de jogos
+</p>
+
+</header>
+
 
 <div class="container">
 
-  <h1>🧠 Caçador IA</h1>
 
-  <div class="subtitulo">
-    Análise e comparação de informações de jogos
-  </div>
+<!-- STATUS FIREBASE -->
 
-  <div id="firebaseStatus" class="firebase loading">
-    🔄 Firebase: a iniciar...
-  </div>
+<div id="firebaseStatus" class="status">
 
-  <div class="card">
-
-    <label for="nomeJogo">
-      🔎 Digite o nome do jogo
-    </label>
-
-    <input
-      id="nomeJogo"
-      type="text"
-      placeholder="Ex.: Manchester United vs Chelsea"
-    >
-
-    <button id="btnBuscar">
-      🏹 Procurar jogo
-    </button>
-
-    <div id="status" class="status">
-      Digite o nome de um jogo para começar.
-    </div>
-
-  </div>
-
-
-  <div id="resultado" class="card resultado">
-
-    <h2>⚽ Jogo encontrado</h2>
-
-    <div class="item">
-      <strong>Confronto:</strong>
-      <span id="confronto">—</span>
-    </div>
-
-    <div class="item">
-      <strong>Competição:</strong>
-      <span id="competicao">—</span>
-    </div>
-
-    <div class="item">
-      <strong>Data:</strong>
-      <span id="data">—</span>
-    </div>
-
-    <div class="item">
-      <strong>Estado:</strong>
-      <span id="estado">—</span>
-    </div>
-
-    <div class="item">
-      <strong>Local:</strong>
-      <span id="local">—</span>
-    </div>
-
-    <div class="leitura">
-
-      <h3>🧠 Leitura do Caçador</h3>
-
-      <div id="leitura">
-        —
-      </div>
-
-    </div>
-
-  </div>
-
-
-  <div class="rodape">
-    Caçador IA V2.2<br>
-    Informações obtidas através do TheSportsDB.
-  </div>
+☁️ Firebase: conectando...
 
 </div>
 
 
-<script type="module">
+<!-- MENU PRINCIPAL -->
 
-/* =====================================================
-   FIREBASE
-===================================================== */
+<div class="menu">
 
-import {
-  initializeApp
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+<button onclick="mostrarAba('pesquisa')">
+🔎 Pesquisar
+</button>
 
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+<button onclick="mostrarAba('palpites')">
+🔮 Palpites
+</button>
 
-import {
-  getAuth,
-  signInAnonymously
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+<button onclick="mostrarAba('historico')">
+📋 Histórico
+</button>
 
+</div>
 
-/* =====================================================
-   CONFIGURAÇÃO DO FIREBASE
-===================================================== */
 
-const firebaseConfig = {
 
-  apiKey:
-    "AIzaSyBslVjFWx2R-zrNpQrWFYoy2-RaYTTu3k0",
+<!-- =====================================================
+     PESQUISA
+===================================================== -->
 
-  authDomain:
-    "cacador-ia.firebaseapp.com",
+<section id="pesquisa" class="section active">
 
-  projectId:
-    "cacador-ia",
+<div class="card">
 
-  storageBucket:
-    "cacador-ia.firebasestorage.app",
+<h2>🔎 Pesquisar jogo</h2>
 
-  messagingSenderId:
-    "296605109235",
+<input
+id="gameInput"
+placeholder="Ex.: Áustria vs Israel"
+>
 
-  appId:
-    "1:296605109235:web:e35f9127d95d12fa266086",
+<button onclick="procurarJogo()">
 
-  measurementId:
-    "G-GLKDSESH67"
+🔭 Procurar jogo
 
-};
+</button>
 
+<div id="searchMessage"></div>
 
-/* =====================================================
-   INICIALIZAÇÃO
-===================================================== */
+</div>
 
-const app = initializeApp(firebaseConfig);
 
-const db = getFirestore(app);
 
-const auth = getAuth(app);
+<!-- JOGO ENCONTRADO -->
 
-let firebasePronto = false;
+<div id="gameCard" class="card hidden">
 
+<h2>
+⚽ Jogo encontrado
+</h2>
 
-/* =====================================================
-   ELEMENTOS
-===================================================== */
+<div id="gameInfo"></div>
 
-const $ = id => document.getElementById(id);
+<hr>
 
-const firebaseStatus =
-  $("firebaseStatus");
 
-const status =
-  $("status");
+<h2>
+🧠 Leitura do Caçador
+</h2>
 
-const resultado =
-  $("resultado");
+<div id="analysis"></div>
 
-const btnBuscar =
-  $("btnBuscar");
+<hr>
 
-const nomeJogo =
-  $("nomeJogo");
 
+<h2>
+🔮 Guardar palpite
+</h2>
 
-/* =====================================================
-   FIREBASE - LOGIN ANÔNIMO
-===================================================== */
 
-async function iniciarFirebase(){
+<label>
+Tipo de palpite
+</label>
 
-  try{
 
-    firebaseStatus.textContent =
-      "🔄 Firebase: a iniciar...";
+<select
+id="predictionType"
+onchange="atualizarOpcoesPalpite()"
+>
 
-    firebaseStatus.className =
-      "firebase loading";
+<option value="1X2">
+Resultado — Casa/Empate/Fora
+</option>
 
+<option value="OVER15">
+Mais de 1.5 gols
+</option>
 
-    await signInAnonymously(auth);
+<option value="OVER25">
+Mais de 2.5 gols
+</option>
 
+<option value="UNDER35">
+Menos de 3.5 gols
+</option>
 
-    firebasePronto = true;
+<option value="BTTS">
+Ambas marcam
+</option>
 
+</select>
 
-    firebaseStatus.textContent =
-      "☁️ Firebase: conectado";
 
-    firebaseStatus.className =
-      "firebase ok";
+<label>
+Palpite
+</label>
 
 
-    console.log(
-      "Firebase conectado. UID:",
-      auth.currentUser?.uid
-    );
+<select id="predictionValue">
 
+</select>
 
-  }catch(error){
 
-    firebasePronto = false;
+<button
+class="green"
+onclick="guardarPalpite()"
+>
 
+💾 Guardar palpite
 
-    console.error(
-      "Erro Firebase Auth:",
-      error
-    );
+</button>
 
 
-    firebaseStatus.textContent =
-      "❌ Firebase: " +
-      (error.code || error.message);
+<div id="saveMessage"></div>
 
-    firebaseStatus.className =
-      "firebase err";
+</div>
 
-  }
+</section>
 
-}
 
 
-/* =====================================================
-   FORMATAÇÃO DA DATA
-===================================================== */
+<!-- =====================================================
+     PALPITES
+===================================================== -->
 
-function formatarData(evento){
+<section id="palpites" class="section">
 
-  const data =
-    evento.dateEvent || "";
+<div class="card">
 
-  const hora =
-    evento.strTime || "";
-
-  if(!data){
-    return "—";
-  }
-
-  return (
-    data +
-    (hora ? " " + hora : "")
-  );
-
-}
-
-
-/* =====================================================
-   ESTADO DO EVENTO
-===================================================== */
-
-function estadoEvento(evento){
-
-  return evento.strStatus ||
-         evento.strProgress ||
-         "NS";
-
-}
-
-
-/* =====================================================
-   LEITURA DO CAÇADOR
-===================================================== */
-
-function criarLeitura(evento){
-
-  const estado =
-    estadoEvento(evento);
-
-  const competicao =
-    evento.strLeague ||
-    "—";
-
-  const local =
-    evento.strVenue ||
-    "—";
-
-
-  return (
-    "Estado atual: " +
-    estado +
-    ". Competição: " +
-    competicao +
-    ". Local: " +
-    local +
-    ". Esta leitura apresenta informações encontradas e não garante o resultado do jogo."
-  );
-
-}
-
-
-/* =====================================================
-   GUARDAR NO FIRESTORE
-===================================================== */
-
-async function guardarHistorico(evento){
-
-  if(!firebasePronto){
-
-    return {
-      sucesso:false,
-      erro:"Firebase não está autenticado."
-    };
-
-  }
-
-
-  try{
-
-    const confronto =
-      (evento.strHomeTeam || "") +
-      " vs " +
-      (evento.strAwayTeam || "");
-
-
-    const leitura =
-      criarLeitura(evento);
-
-
-    const dados = {
-
-      jogo: confronto,
-
-      confronto: confronto,
-
-      competicao:
-        evento.strLeague || "—",
-
-      data:
-        formatarData(evento),
-
-      estado:
-        estadoEvento(evento),
-
-      local:
-        evento.strVenue || "—",
-
-      leitura:
-        leitura,
-
-      criadoEm:
-        serverTimestamp()
-
-    };
-
-
-    console.log(
-      "Tentando guardar no Firestore:",
-      dados
-    );
-
-
-    const documento =
-      await addDoc(
-        collection(db, "historico"),
-        dados
-      );
-
-
-    console.log(
-      "Documento criado:",
-      documento.id
-    );
-
-
-    return {
-      sucesso:true,
-      id:documento.id
-    };
-
-
-  }catch(error){
-
-    console.error(
-      "ERRO FIRESTORE:",
-      error
-    );
-
-
-    return {
-
-      sucesso:false,
-
-      erro:
-        (error.code || "") +
-        " - " +
-        (error.message || error)
-
-    };
-
-  }
-
-}
-
-
-/* =====================================================
-   MOSTRAR RESULTADO
-===================================================== */
-
-function mostrarResultado(evento){
-
-  const confronto =
-    (evento.strHomeTeam || "") +
-    " vs " +
-    (evento.strAwayTeam || "");
-
-
-  $("confronto").textContent =
-    confronto;
-
-  $("competicao").textContent =
-    evento.strLeague || "—";
-
-  $("data").textContent =
-    formatarData(evento);
-
-  $("estado").textContent =
-    estadoEvento(evento);
-
-  $("local").textContent =
-    evento.strVenue || "—";
-
-  $("leitura").textContent =
-    criarLeitura(evento);
-
-
-  resultado.style.display =
-    "block";
-
-}
-
-
-/* =====================================================
-   BUSCAR JOGO PELO NOME
-===================================================== */
-
-async function buscarPorNome(nome){
-
-  const url =
-    "https://www.thesportsdb.com/api/v1/json/123/searchevents.php?e=" +
-    encodeURIComponent(nome);
-
-
-  const resposta =
-    await fetch(url);
-
-
-  if(!resposta.ok){
-
-    throw new Error(
-      "Erro HTTP: " +
-      resposta.status
-    );
-
-  }
-
-
-  const dados =
-    await resposta.json();
-
-
-  if(
-    dados &&
-    dados.event &&
-    dados.event.length > 0
-  ){
-
-    return dados.event[0];
-
-  }
-
-
-  return null;
-
-}
-
-
-/* =====================================================
-   BUSCAR JOGOS DOS PRÓXIMOS DIAS
-===================================================== */
-
-async function buscarJogosDoDia(data){
-
-  const url =
-    "https://www.thesportsdb.com/api/v1/json/123/eventsday.php?d=" +
-    data +
-    "&s=Soccer";
-
-
-  const resposta =
-    await fetch(url);
-
-
-  if(!resposta.ok){
-
-    return [];
-
-  }
-
-
-  const dados =
-    await resposta.json();
-
-
-  return dados.events || [];
-
-}
-
-
-/* =====================================================
-   COMPARAR NOMES
-===================================================== */
-
-function normalizar(texto){
-
-  return texto
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g,"")
-    .replace(/[^a-z0-9]/g,"");
-
-}
-
-
-/* =====================================================
-   PROCURAR NOS JOGOS DO DIA
-===================================================== */
-
-function encontrarJogo(lista,nome){
-
-  const pesquisa =
-    normalizar(nome);
-
-
-  for(
-    const jogo of lista
-  ){
-
-    const casa =
-      normalizar(
-        jogo.strHomeTeam || ""
-      );
-
-    const fora =
-      normalizar(
-        jogo.strAwayTeam || ""
-      );
-
-
-    const confronto =
-      casa + fora;
-
-
-    if(
-      confronto.includes(pesquisa) ||
-      pesquisa.includes(casa) ||
-      pesquisa.includes(fora)
-    ){
-
-      return jogo;
-
-    }
-
-
-    const nomeCasaFora =
-      normalizar(
-        (jogo.strHomeTeam || "") +
-        "vs" +
-        (jogo.strAwayTeam || "")
-      );
-
-
-    if(
-      nomeCasaFora.includes(pesquisa)
-    ){
-
-      return jogo;
-
-    }
-
-  }
-
-
-  return null;
-
-}
-
-
-/* =====================================================
-   BUSCAR
-===================================================== */
-
-async function procurarJogo(){
-
-  const nome =
-    nomeJogo.value.trim();
-
-
-  if(!nome){
-
-    status.textContent =
-      "⚠️ Digite o nome do jogo.";
-
-    resultado.style.display =
-      "none";
-
-    return;
-
-  }
-
-
-  btnBuscar.disabled =
-    true;
-
-
-  btnBuscar.textContent =
-    "🔎 A procurar...";
-
-
-  status.textContent =
-    "🔎 Procurando informações...";
-
-
-  resultado.style.display =
-    "none";
-
-
-  try{
-
-    let evento =
-      await buscarPorNome(nome);
-
-
-    /* ---------------------------------------------
-       SEGUNDA TENTATIVA:
-       procurar nos próximos 8 dias
-    --------------------------------------------- */
-
-    if(!evento){
-
-      const hoje =
-        new Date();
-
-
-      for(
-        let i = 0;
-        i < 8;
-        i++
-      ){
-
-        const data =
-          new Date(hoje);
-
-
-        data.setDate(
-          hoje.getDate() + i
-        );
-
-
-        const ano =
-          data.getFullYear();
-
-
-        const mes =
-          String(
-            data.getMonth()+1
-          ).padStart(2,"0");
-
-
-        const dia =
-          String(
-            data.getDate()
-          ).padStart(2,"0");
-
-
-        const dataFormatada =
-          ano +
-          "-" +
-          mes +
-          "-" +
-          dia;
-
-
-        const jogos =
-          await buscarJogosDoDia(
-            dataFormatada
-          );
-
-
-        evento =
-          encontrarJogo(
-            jogos,
-            nome
-          );
-
-
-        if(evento){
-
-          break;
-
-        }
-
-      }
-
-    }
-
-
-    /* ---------------------------------------------
-       NENHUM JOGO
-    --------------------------------------------- */
-
-    if(!evento){
-
-      status.textContent =
-        "❌ Nenhum jogo encontrado com esse nome.";
-
-      return;
-
-    }
-
-
-    /* ---------------------------------------------
-       MOSTRAR JOGO
-    --------------------------------------------- */
-
-    mostrarResultado(evento);
-
-
-    /* ---------------------------------------------
-       GUARDAR NO FIRESTORE
-    --------------------------------------------- */
-
-    status.textContent =
-      "⏳ Jogo encontrado. A guardar no Firebase...";
-
-
-    const resultadoFirebase =
-      await guardarHistorico(evento);
-
-
-    if(
-      resultadoFirebase.sucesso
-    ){
-
-      status.innerHTML =
-        "✅ <strong>Jogo encontrado e guardado no Firebase.</strong><br>" +
-        "ID do documento: " +
-        resultadoFirebase.id;
-
-    }else{
-
-      status.innerHTML =
-        "⚠️ <strong>Jogo encontrado, mas não foi guardado.</strong><br><br>" +
-        "Erro do Firebase:<br>" +
-        resultadoFirebase.erro;
-
-    }
-
-
-  }catch(error){
-
-    console.error(
-      "Erro na pesquisa:",
-      error
-    );
-
-
-    status.innerHTML =
-      "❌ <strong>Erro ao procurar o jogo.</strong><br>" +
-      (error.message || error);
-
-  }finally{
-
-    btnBuscar.disabled =
-      false;
-
-    btnBuscar.textContent =
-      "🏹 Procurar jogo";
-
-  }
-
-}
-
-
-/* =====================================================
-   BOTÃO
-===================================================== */
-
-btnBuscar.addEventListener(
-  "click",
-  procurarJogo
-);
-
-
-/* =====================================================
-   ENTER NO CAMPO
-===================================================== */
-
-nomeJogo.addEventListener(
-  "keydown",
-  event => {
-
-    if(
-      event.key === "Enter"
-    ){
-
-      procurarJogo();
-
-    }
-
-  }
-);
-
-
-/* =====================================================
-   INICIAR FIREBASE
-===================================================== */
-
-iniciarFirebase();
-
-</script>
-
-</body>
-  </html>
+<h2>
